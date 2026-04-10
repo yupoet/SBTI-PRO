@@ -1590,6 +1590,36 @@
     </div>
   </div>
 
+  <!-- Stats Modal -->
+  <div class="stats-overlay" id="statsOverlay" role="dialog" aria-modal="true" aria-label="测试统计">
+    <div class="stats-box">
+      <div class="stats-header">
+        <div class="stats-header-text">
+          <h2 id="statsTotal">加载中…</h2>
+          <p id="statsToday"></p>
+        </div>
+        <button class="stats-close" id="statsCloseBtn" aria-label="关闭">✕</button>
+      </div>
+      <div class="stats-body" id="statsBody">
+        <div class="stats-loading">正在读取统计数据…</div>
+      </div>
+    </div>
+  </div>
+  <!-- Share Site Modal -->
+  <div class="share-site-overlay" id="shareSiteOverlay" role="dialog" aria-modal="true" aria-label="分享 SBTI 首页">
+    <div class="share-site-box">
+      <button class="share-site-close" id="shareSiteClose" aria-label="关闭">✕</button>
+      <div class="share-site-title">分享 SBTI 人格测试</div>
+      <div class="share-site-sub">扫码或复制链接，邀请朋友来测测</div>
+      <div class="share-site-qr" id="shareSiteQr"></div>
+      <div class="share-site-url">sbti.ytht.io</div>
+      <div class="share-site-actions">
+        <button class="share-site-copy" id="shareSiteCopy">复制链接</button>
+        <button class="share-site-native" id="shareSiteNative" style="display:none">分享</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <script>
     const dimensionMeta = {
@@ -3342,34 +3372,5 @@
     // ── End Share Site ───────────────────────────────────────────
   </script>
 
-  <!-- Stats Modal -->
-  <div class="stats-overlay" id="statsOverlay" role="dialog" aria-modal="true" aria-label="测试统计">
-    <div class="stats-box">
-      <div class="stats-header">
-        <div class="stats-header-text">
-          <h2 id="statsTotal">加载中…</h2>
-          <p id="statsToday"></p>
-        </div>
-        <button class="stats-close" id="statsCloseBtn" aria-label="关闭">✕</button>
-      </div>
-      <div class="stats-body" id="statsBody">
-        <div class="stats-loading">正在读取统计数据…</div>
-      </div>
-    </div>
-  </div>
-  <!-- Share Site Modal -->
-  <div class="share-site-overlay" id="shareSiteOverlay" role="dialog" aria-modal="true" aria-label="分享 SBTI 首页">
-    <div class="share-site-box">
-      <button class="share-site-close" id="shareSiteClose" aria-label="关闭">✕</button>
-      <div class="share-site-title">分享 SBTI 人格测试</div>
-      <div class="share-site-sub">扫码或复制链接，邀请朋友来测测</div>
-      <div class="share-site-qr" id="shareSiteQr"></div>
-      <div class="share-site-url">sbti.ytht.io</div>
-      <div class="share-site-actions">
-        <button class="share-site-copy" id="shareSiteCopy">复制链接</button>
-        <button class="share-site-native" id="shareSiteNative" style="display:none">分享</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
