@@ -2063,9 +2063,19 @@
       });
     }
 
-    function sumToLevel(score) {
-      if (score <= 3) return 'L';
-      if (score === 4) return 'M';
+    const dimQuestionCount = {
+      S1: 2, S2: 3, S3: 2,
+      E1: 3, E2: 3, E3: 3,
+      A1: 2, A2: 2, A3: 3,
+      Ac1: 2, Ac2: 2, Ac3: 3,
+      So1: 2, So2: 2, So3: 3,
+      N1: 2, N2: 2
+    };
+
+    function sumToLevel(score, numQ) {
+      numQ = numQ || 2;
+      if (score <= numQ * 1.5) return 'L';
+      if (score <= numQ * 2.0) return 'M';
       return 'H';
     }
 
@@ -2091,7 +2101,7 @@
       });
 
       Object.entries(rawScores).forEach(([dim, score]) => {
-        levels[dim] = sumToLevel(score);
+        levels[dim] = sumToLevel(score, dimQuestionCount[dim] || 2);
       });
 
       const userVector = dimensionOrder.map(dim => levelNum(levels[dim]));
@@ -2104,7 +2114,7 @@
           distance += diff;
           if (diff === 0) exact += 1;
         }
-        const similarity = Math.max(0, Math.round((1 - distance / 30) * 100));
+        const similarity = Math.max(0, Math.round((1 - distance / 34) * 100));
         return { ...type, ...TYPE_LIBRARY[type.code], distance, exact, similarity };
       }).sort((a, b) => {
         if (a.distance !== b.distance) return a.distance - b.distance;
@@ -2117,7 +2127,7 @@
 
       let finalType;
       let modeKicker = '你的主类型';
-      let badge = `匹配度 ${bestNormal.similarity}% · 精准命中 ${bestNormal.exact}/15 维`;
+      let badge = `匹配度 ${bestNormal.similarity}% · 精准命中 ${bestNormal.exact}/17 維`;
       let sub = '维度命中度较高，当前结果可视为你的第一人格画像。';
       let special = false;
       let secondaryType = null;
