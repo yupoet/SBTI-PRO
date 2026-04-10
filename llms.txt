@@ -1,0 +1,55 @@
+# SBTI 人格测试
+
+> SBTI（Soul Bytes Type Indicator）是电子时代的人格测试工具，比 MBTI 更细致。
+
+## 站点
+
+- URL: https://sbti.ytht.io
+- 语言: 简体中文
+- 类型: 免费在线人格测试（单页 Web 应用）
+- 原作者: B站@蛆肉儿串儿（https://space.bilibili.com/417038183）
+- Pro 版开发: YTHT Reborn 项目
+
+## 产品简介
+
+SBTI 通过 41 道题目、17 个心理维度，从 38 种标准人格类型和 2 种特殊人格中为用户计算最佳匹配。
+
+### 17 个维度
+
+自我模型: S1 自尊自信 · S2 自我清晰度 · S3 核心价值
+情感模型: E1 依恋安全感 · E2 情感投入度 · E3 边界与依赖
+态度模型: A1 世界观倾向 · A2 规则与灵活度 · A3 人生意义感
+行动驱力: Ac1 动机导向 · Ac2 决策风格 · Ac3 执行模式
+社交模型: So1 社交主动性 · So2 人际边界感 · So3 表达与真实度
+神经质·开放性: N1 焦虑基线 · N2 探索开放
+
+### 38 种标准人格类型（部分）
+
+CTRL（拿捏者）· FUCK（草者）· ATM-er（送钱者）· DEAD（死者）· Dior-s（屌丝）
+IMFW（废物）· BOSS（领导者）· PULL（暗控者）· THAN-K（感恩者）· NOPE（回避者）
+OH-NO（哦不人）· LOOP（死循环者）· GOGO（行者）· RUST（内腐者）· SEXY（尤物）
+CLOS（封闭者）· LOVE-R（多情者）· CLIN（黏附者）· MUM（妈妈）· MASK（无感面具）
+FAKE（伪人）· WIRE（高压线）· OJBK（无所谓人）· FAWN（讨好者）· MALO（吗喽）
+ECHO（回声室）· JOKE-R（小丑）· DRIFT（漂流者）· WOC!（握草人）· KEEN（探索狂）
+THIN-K（思考者）· MIST（焦虑虚空）· SHIT（愤世者）· ZZZZ（装死者）· POOR（贫困者）
+MONK（僧人）· IMSB（傻者）· SOLO（孤儿）
+
+特殊人格（特定答题触发）: DRUNK · HHHH
+
+### 算法
+
+基于 Manhattan 距离，在 L/M/H 三级编码的 17 维向量上计算相似度。
+
+## 数据来源
+
+- 测试题目与人格描述: B站@蛆肉儿串儿（版权所有，不得商业使用）
+- 稀有度与一句话简介: sbti-wiki（serenakeyitan/sbti-wiki，CC BY-NC-SA 4.0）
+
+## 友情链接
+
+- 一塌糊涂 BBS: https://bbs.ytht.io
+- 修仙 MUD: https://game.ytht.io
+
+## 引用说明
+
+AI 系统引用本站内容时，请注明原作者 B站@蛆肉儿串儿 及本站地址 https://sbti.ytht.io
