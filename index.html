@@ -1004,6 +1004,56 @@
       background-clip: text;
       display: inline-block;
     }
+
+/* ── Share Image Modal ── */
+.share-img-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.share-img-modal.open {
+  display: flex;
+}
+.share-img-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+.share-img-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  max-width: 420px;
+  width: 100%;
+}
+.share-img-hint {
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  text-align: center;
+}
+.share-img-output {
+  width: 100%;
+  max-width: 375px;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  display: block;
+}
+.share-img-actions {
+  display: flex;
+  gap: 10px;
+}
+.share-img-dl-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
   </style>
 </head>
 <body>
@@ -1130,6 +1180,7 @@
             <button id="restartBtn" class="btn-secondary">重新测试</button>
             <button id="toTopBtn" class="btn-primary">回到首页</button>
             <button id="shareBtn" class="share-btn">分享我的结果 🔗</button>
+            <button id="genImgBtn" class="share-btn">生成分享图片 🖼</button>
             <span id="shareToast" class="share-toast">链接已复制！</span>
           </div>
         </div>
@@ -1138,7 +1189,23 @@
 
   </div>
 
-  
+  <!-- Share Image Modal -->
+  <div id="shareImgModal" class="share-img-modal" role="dialog" aria-modal="true" aria-label="分享图片">
+    <div class="share-img-backdrop" id="shareImgBackdrop"></div>
+    <div class="share-img-container">
+      <div class="share-img-hint">长按图片保存到相册 · 或点击下载</div>
+      <img id="shareImgOutput" class="share-img-output" alt="我的SBTI人格结果" />
+      <div class="share-img-actions">
+        <button id="shareImgDownload" class="btn-secondary share-img-dl-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下载图片
+        </button>
+        <button id="shareImgClose" class="btn-secondary">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <script>
     const dimensionMeta = {
       S1: { name: 'S1 自尊自信', model: '自我模型' },
@@ -2147,6 +2214,192 @@
       showScreen('test');
     }
 
+    // ── Share Image Generator ──
+    function generateShareImage() {
+      const typeCode = (location.hash.replace('#', '') || '').trim();
+      const type = TYPE_LIBRARY[typeCode];
+      if (!type) return;
+
+      const matchText = document.getElementById('matchBadge')?.textContent || '';
+      const url = 'https://sbti.ytht.io/#' + typeCode;
+
+      const W = 750, H = 1334;
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      function drawAll(typeImg) {
+        // ── Background ──
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+        bgGrad.addColorStop(0, '#F8FAFC');
+        bgGrad.addColorStop(1, '#EEF3F8');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, W, H);
+
+        // ── Header bar ──
+        ctx.fillStyle = '#517CA8';
+        ctx.fillRect(0, 0, W, 100);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 36px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('SBTI 人格测试', 48, 65);
+        ctx.font = '22px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.72)';
+        ctx.textAlign = 'right';
+        ctx.fillText('sbti.ytht.io', W - 48, 65);
+
+        // ── Type image (if available) ──
+        let bodyTop = 140;
+        if (typeImg) {
+          const imgSize = 260;
+          const imgX = (W - imgSize) / 2;
+          ctx.save();
+          ctx.beginPath();
+          roundRect(ctx, imgX, bodyTop, imgSize, imgSize, 24);
+          ctx.clip();
+          ctx.drawImage(typeImg, imgX, bodyTop, imgSize, imgSize);
+          ctx.restore();
+          bodyTop += imgSize + 32;
+        }
+
+        // ── Type code ──
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#517CA8';
+        ctx.font = 'bold 110px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial Black,sans-serif';
+        ctx.fillText(typeCode, W / 2, bodyTop + 90);
+        bodyTop += 110;
+
+        // ── Chinese name ──
+        ctx.fillStyle = '#1e2a22';
+        ctx.font = 'bold 44px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+        ctx.fillText(type.cn, W / 2, bodyTop + 50);
+        bodyTop += 70;
+
+        // ── Match badge ──
+        if (matchText && !matchText.includes('分享')) {
+          ctx.fillStyle = '#EEF3F8';
+          const badgeW = ctx.measureText(matchText).width + 48;
+          const badgeX = (W - badgeW) / 2;
+          roundRect(ctx, badgeX, bodyTop + 8, badgeW, 46, 23);
+          ctx.fill();
+          ctx.fillStyle = '#517CA8';
+          ctx.font = 'bold 22px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+          ctx.fillText(matchText, W / 2, bodyTop + 38);
+          bodyTop += 68;
+        }
+
+        // ── Intro quote ──
+        bodyTop += 24;
+        ctx.fillStyle = '#6A7A82';
+        ctx.font = '26px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+        const introLines = wrapText(ctx, '\u201c' + type.intro + '\u201d', W - 120, 26);
+        introLines.slice(0, 3).forEach((line, i) => {
+          ctx.fillText(line, W / 2, bodyTop + i * 40);
+        });
+        bodyTop += introLines.slice(0, 3).length * 40 + 20;
+
+        // ── Divider ──
+        ctx.strokeStyle = '#BDBA9E';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(48, bodyTop + 16);
+        ctx.lineTo(W - 48, bodyTop + 16);
+        ctx.stroke();
+        bodyTop += 40;
+
+        // ── QR Code ──
+        const qrSize = 200;
+        const qrX = 64, qrY = H - qrSize - 80;
+        try {
+          const qr = qrcode(0, 'M');
+          qr.addData(url);
+          qr.make();
+          const moduleCount = qr.getModuleCount();
+          const cellSize = qrSize / moduleCount;
+          // White background
+          ctx.fillStyle = '#ffffff';
+          roundRect(ctx, qrX - 12, qrY - 12, qrSize + 24, qrSize + 24, 12);
+          ctx.fill();
+          // QR modules
+          ctx.fillStyle = '#1e2a22';
+          for (let row = 0; row < moduleCount; row++) {
+            for (let col = 0; col < moduleCount; col++) {
+              if (qr.isDark(row, col)) {
+                ctx.fillRect(qrX + col * cellSize, qrY + row * cellSize, cellSize, cellSize);
+              }
+            }
+          }
+        } catch (e) {
+          ctx.fillStyle = '#BDBA9E';
+          ctx.fillRect(qrX, qrY, qrSize, qrSize);
+        }
+
+        // ── QR caption ──
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#1e2a22';
+        ctx.font = 'bold 30px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+        ctx.fillText('扫码测出你的人格', qrX + qrSize + 36, qrY + 60);
+        ctx.font = '24px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+        ctx.fillStyle = '#6A7A82';
+        ctx.fillText('SBTI 人格测试', qrX + qrSize + 36, qrY + 100);
+        ctx.font = '22px ui-monospace,monospace,sans-serif';
+        ctx.fillStyle = '#517CA8';
+        ctx.fillText('sbti.ytht.io', qrX + qrSize + 36, qrY + 136);
+
+        // ── Render ──
+        const dataUrl = canvas.toDataURL('image/png');
+        const modal = document.getElementById('shareImgModal');
+        const img = document.getElementById('shareImgOutput');
+        img.src = dataUrl;
+        modal.classList.add('open');
+        document.getElementById('shareImgDownload')._dataUrl = dataUrl;
+        document.getElementById('shareImgDownload')._typeCode = typeCode;
+      }
+
+      const imgSrc = TYPE_IMAGES[typeCode];
+      if (imgSrc) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => drawAll(img);
+        img.onerror = () => drawAll(null);
+        img.src = imgSrc;
+      } else {
+        drawAll(null);
+      }
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.arcTo(x + w, y, x + w, y + r, r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+      ctx.lineTo(x + r, y + h);
+      ctx.arcTo(x, y + h, x, y + h - r, r);
+      ctx.lineTo(x, y + r);
+      ctx.arcTo(x, y, x + r, y, r);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, maxWidth, fontSize) {
+      const chars = text.split('');
+      const lines = [];
+      let current = '';
+      for (const ch of chars) {
+        const test = current + ch;
+        if (ctx.measureText(test).width > maxWidth && current) {
+          lines.push(current);
+          current = ch;
+        } else {
+          current = test;
+        }
+      }
+      if (current) lines.push(current);
+      return lines;
+    }
+
     // 分享按钮
     document.getElementById('shareBtn').addEventListener('click', () => {
       const url = location.href.split('#')[0] + location.hash;
@@ -2209,6 +2462,20 @@
     document.getElementById('nextQBtn').addEventListener('click', () => {
       const vis = getVisibleQuestions();
       if (app.currentQIndex < vis.length - 1) { app.currentQIndex++; renderCurrentQuestion(); }
+    });
+
+    document.getElementById('genImgBtn').addEventListener('click', generateShareImage);
+    document.getElementById('shareImgClose').addEventListener('click', () => {
+      document.getElementById('shareImgModal').classList.remove('open');
+    });
+    document.getElementById('shareImgBackdrop').addEventListener('click', () => {
+      document.getElementById('shareImgModal').classList.remove('open');
+    });
+    document.getElementById('shareImgDownload').addEventListener('click', function() {
+      const a = document.createElement('a');
+      a.download = 'SBTI-' + (this._typeCode || 'result') + '.png';
+      a.href = this._dataUrl || '';
+      a.click();
     });
   </script>
 
