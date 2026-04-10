@@ -1,10 +1,4 @@
-const VALID_TYPES = new Set([
-  'CTRL','ATM-er','Dior-s','BOSS','THAN-K','OH-NO','GOGO','SEXY','LOVE-R','MUM',
-  'FAKE','OJBK','MALO','JOKE-R','WOC!','THIN-K','SHIT','ZZZZ','POOR','MONK',
-  'IMSB','SOLO','FUCK','DEAD','IMFW',
-  'PULL','NOPE','LOOP','RUST','CLOS','CLIN','MASK','WIRE','FAWN','ECHO','DRIFT','KEEN','MIST',
-  'DRUNK','HHHH',
-]);
+import { VALID_TYPES } from './_types.js';
 
 export async function onRequestPost(context) {
   const { env, request } = context;
@@ -17,7 +11,7 @@ export async function onRequestPost(context) {
   }
 
   const type = body?.type;
-  if (!type || !VALID_TYPES.has(type)) {
+  if (typeof type !== 'string' || !VALID_TYPES.has(type)) {
     return json({ error: 'invalid type' }, 400);
   }
 
@@ -28,9 +22,9 @@ export async function onRequestPost(context) {
     env.SBTI_STATS.get(`date:${today}`),
   ]);
 
-  const total     = parseInt(totalStr  || '0') + 1;
-  const typeCount = parseInt(typeStr   || '0') + 1;
-  const daily     = parseInt(dailyStr  || '0') + 1;
+  const total     = (parseInt(totalStr  || '0') || 0) + 1;
+  const typeCount = (parseInt(typeStr   || '0') || 0) + 1;
+  const daily     = (parseInt(dailyStr  || '0') || 0) + 1;
 
   await Promise.all([
     env.SBTI_STATS.put('total',         String(total)),
@@ -38,7 +32,7 @@ export async function onRequestPost(context) {
     env.SBTI_STATS.put(`date:${today}`, String(daily)),
   ]);
 
-  return json({ ok: true, total, typeCount });
+  return json({ ok: true });
 }
 
 function json(data, status = 200) {
