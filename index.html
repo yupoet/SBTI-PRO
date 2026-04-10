@@ -990,6 +990,21 @@
       color: var(--accent-strong);
       font-weight: 600;
     }
+    .stats-fab {
+      position: fixed;
+      bottom: 50px;
+      right: 16px;
+      z-index: 200;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.45;
+      transition: opacity .2s ease, transform .15s ease;
+      padding: 2px;
+      line-height: 1;
+    }
+    .stats-fab:hover { opacity: 1; transform: scale(1.15); }
 
     /* ── 域名居中 ── */
     .hero-domain-center {
@@ -1163,6 +1178,7 @@
   </style>
 </head>
 <body>
+  <button class="stats-fab" id="statsBtn" title="查看测试统计">📊</button>
   <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="site-author-credit">
     <span>原作者</span><strong>B站@蛆肉儿串儿</strong>
   </a>
@@ -2506,6 +2522,7 @@
       renderDimList(result);
       showScreen('result');
       history.replaceState(null, '', '#' + type.code);
+      trackResult(type.code);
     }
 
     function renderTypeGrid() {
