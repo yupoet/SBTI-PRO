@@ -2974,6 +2974,141 @@
       a.href = this._dataUrl || '';
       a.click();
     });
+
+    // ── Stats ──────────────────────────────────────────────
+    function trackResult(typeCode) {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: typeCode }),
+      }).catch(() => {});
+    }
+
+    (function initStats() {
+      const btn      = document.getElementById('statsBtn');
+      const overlay  = document.getElementById('statsOverlay');
+      const closeBtn = document.getElementById('statsCloseBtn');
+      const totalEl  = document.getElementById('statsTotal');
+      const todayEl  = document.getElementById('statsToday');
+      const bodyEl   = document.getElementById('statsBody');
+
+      let loaded = false;
+
+      function openStats() {
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        if (!loaded) {
+          loaded = true;
+          loadStats();
+        }
+      }
+
+      function closeStats() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      btn.addEventListener('click', openStats);
+      closeBtn.addEventListener('click', closeStats);
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeStats();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeStats();
+      });
+
+      function loadStats() {
+        fetch('/api/stats')
+          .then(function(r) { return r.json(); })
+          .then(function(data) { renderStats(data); })
+          .catch(function() {
+            bodyEl.innerHTML = '<div class="stats-empty">统计数据暂时无法加载，请稍后再试。</div>';
+          });
+      }
+
+      function renderStats(data) {
+        var total = data.total || 0;
+        var today = data.todayCount || 0;
+        var dist  = data.distribution || {};
+        var trend = data.trend || [];
+
+        totalEl.textContent = '共 ' + total.toLocaleString('zh-CN') + ' 人完成测试';
+        todayEl.textContent = '今日 ' + today.toLocaleString('zh-CN') + ' 人';
+
+        var sorted = Object.entries(dist).sort(function(a, b) { return b[1] - a[1]; });
+        var maxCount = sorted.length ? sorted[0][1] : 1;
+
+        var barsHTML = '';
+        if (sorted.length === 0) {
+          barsHTML = '<div class="stats-empty">还没有人完成测试，你来做第一个？</div>';
+        } else {
+          barsHTML = '<p class="stats-section-title">人格分布</p>';
+          sorted.forEach(function(entry) {
+            var code  = entry[0];
+            var count = entry[1];
+            var pct   = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+            var barW  = ((count / maxCount) * 100).toFixed(1);
+            var cn    = (TYPE_LIBRARY[code] && TYPE_LIBRARY[code].cn) ? TYPE_LIBRARY[code].cn : '';
+            barsHTML += '<div class="stats-bar-row">' +
+              '<div class="stats-bar-label">' + code + '<span>' + cn + '</span></div>' +
+              '<div class="stats-bar-track"><div class="stats-bar-fill" style="width:' + barW + '%"></div></div>' +
+              '<div class="stats-bar-count">' + count.toLocaleString('zh-CN') + ' <small>' + pct + '%</small></div>' +
+              '</div>';
+          });
+        }
+
+        barsHTML += '<div class="stats-trend-wrap">' +
+          '<p class="stats-section-title">近 7 天趋势</p>' +
+          '<canvas id="statsTrendCanvas"></canvas>' +
+          '</div>';
+
+        bodyEl.innerHTML = barsHTML;
+        drawTrend(trend);
+      }
+
+      function drawTrend(trend) {
+        var canvas = document.getElementById('statsTrendCanvas');
+        if (!canvas) return;
+        var dpr  = window.devicePixelRatio || 1;
+        var cssW = canvas.parentElement.clientWidth || 480;
+        var cssH = 70;
+        canvas.width  = cssW * dpr;
+        canvas.height = cssH * dpr;
+        canvas.style.width  = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+
+        var ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        var max  = Math.max.apply(null, trend.map(function(d) { return d.count; }).concat([1]));
+        var n    = trend.length;
+        var gap  = 4;
+        var barW = Math.floor((cssW - gap * (n + 1)) / n);
+        var labelH = 14;
+        var chartH = cssH - labelH - 2;
+
+        trend.forEach(function(d, i) {
+          var bh = Math.max(3, (d.count / max) * chartH);
+          var x  = gap + i * (barW + gap);
+          var y  = chartH - bh;
+
+          ctx.fillStyle = '#4C91C1';
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(x, y, barW, bh, 3);
+          } else {
+            ctx.rect(x, y, barW, bh);
+          }
+          ctx.fill();
+
+          ctx.fillStyle = '#6A7A82';
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(d.date.slice(5), x + barW / 2, cssH - 2);
+        });
+      }
+    })();
+    // ── End Stats ───────────────────────────────────────────
   </script>
 
   <!-- Stats Modal -->
