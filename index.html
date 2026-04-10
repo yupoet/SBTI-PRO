@@ -14,6 +14,9 @@
   <meta name="twitter:title" content="SBTI 人格测试" />
   <meta name="twitter:description" content="15 维度，27 种人格，测出你的真实底色。" />
   <meta name="twitter:image" content="https://sbti.ytht.io/image/CTRL.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root {
       /* NCB Pastel-A palette (Paper 1 & 2) */
@@ -134,7 +137,7 @@
       margin-top: 22px;
     }
     .hero-minimal {
-      min-height: 48vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -918,20 +921,86 @@
       border-color: #bcd0c1;
       transform: translateY(-1px);
     }
+
+    /* ── type-gallery accordion ── */
+    .type-gallery-details {
+      margin-top: 0;
+      border-top: 1px solid var(--line);
+    }
+    .type-gallery-details > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 20px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--bg);
+      transition: color .15s ease;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .type-gallery-details > summary::-webkit-details-marker { display: none; }
+    .type-gallery-details > summary::marker { display: none; }
+    .type-gallery-details > summary .gallery-arrow {
+      display: inline-block;
+      transition: transform .22s ease;
+      font-style: normal;
+    }
+    .type-gallery-details[open] > summary .gallery-arrow {
+      transform: rotate(180deg);
+    }
+    .type-gallery-details > summary:hover { color: var(--accent-strong); }
+    .type-gallery-details .type-gallery {
+      margin-top: 0;
+      padding: 0 0 32px;
+    }
+
+    /* ── single-question mobile ── */
+    .q-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .question-single {
+      min-height: calc(70dvh - 80px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* ── SBTI 艺术字体 ── */
+    .sbti-brand {
+      font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+      letter-spacing: 0.05em;
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent-strong) 0%, #5bb5c8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
   <div class="shell">
     <section id="intro" class="screen active">
       <div class="hero card hero-minimal">
-        <h1>MBTI已经过时，SBTI来了。</h1>
+        <h1>MBTI已经过时，<span class="sbti-brand">SBTI</span>来了。</h1>
         <div class="hero-actions hero-actions-single">
           <button id="startBtn" class="btn-primary">开始测试</button>
           <button id="previewBtn" class="btn-secondary">预览模式（显示维度标签）</button>
         </div>
         <div class="hero-meta">
           <div class="hero-meta-credit">
-            原作者
+            <span class="hero-meta-links-label">原作者</span>
             <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="hero-meta-author">B站@蛆肉儿串儿</a>
             <span class="hero-meta-sep">·</span>
             <a href="https://sbti.ytht.io" class="hero-meta-domain">sbti.ytht.io</a>
@@ -946,13 +1015,19 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               修仙 MUD
             </a>
+            <a href="https://github.com/yupoet/SBTI-PRO" target="_blank" rel="noopener" class="hero-meta-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              Pro版开源地址
+            </a>
           </div>
         </div>
       </div>
-      <div class="type-gallery">
-        <h2>27 种人格，总有一个是你</h2>
-        <div id="typeGrid" class="type-grid"></div>
-      </div>
+      <details class="type-gallery-details">
+        <summary>27 种人格，总有一个是你 <i class="gallery-arrow">↓</i></summary>
+        <div class="type-gallery">
+          <div id="typeGrid" class="type-grid"></div>
+        </div>
+      </details>
     </section>
 
     <section id="test" class="screen">
@@ -962,13 +1037,17 @@
           <div class="progress-text" id="progressText">0 / 31</div>
         </div>
 
-        <div id="questionList" class="question-list"></div>
+        <div id="questionList"></div>
 
         <div class="actions-bottom">
-          <div class="hint" id="testHint">全选完才会放行。世界已经够乱了，起码把题做完整。</div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <div class="hint" id="testHint"></div>
+          <div class="q-nav">
             <button id="backIntroBtn" class="btn-secondary">返回首页</button>
-            <button id="submitBtn" class="btn-primary" disabled>提交并查看结果</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <button id="prevQBtn" class="btn-secondary" style="display:none">← 上一题</button>
+              <button id="nextQBtn" class="btn-primary">下一题 →</button>
+              <button id="submitBtn" class="btn-primary" disabled style="display:none">提交并查看结果</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1738,7 +1817,8 @@
     const app = {
       shuffledQuestions: [],
       answers: {},
-      previewMode: false
+      previewMode: false,
+      currentQIndex: 0
     };
 
     const screens = {
@@ -1783,67 +1863,63 @@
       return app.previewMode ? dimensionMeta[q.dim].name : '维度已隐藏';
     }
 
-    function renderQuestions() {
+    function renderCurrentQuestion() {
       const visibleQuestions = getVisibleQuestions();
-      questionList.innerHTML = '';
-      visibleQuestions.forEach((q, index) => {
-        const card = document.createElement('article');
-        card.className = 'question';
-        card.innerHTML = `
+      const total = visibleQuestions.length;
+      app.currentQIndex = Math.min(app.currentQIndex, total - 1);
+      const idx = app.currentQIndex;
+      const q = visibleQuestions[idx];
+      const isLast = idx === total - 1;
+
+      questionList.className = 'question-single';
+      questionList.innerHTML = `
+        <article class="question">
           <div class="question-meta">
-            <div class="badge">第 ${index + 1} 题</div>
+            <div class="badge">第 ${idx + 1} 题 / 共 ${total} 题</div>
             <div>${getQuestionMetaLabel(q)}</div>
           </div>
           <div class="question-title">${q.text}</div>
           <div class="options">
             ${q.options.map((opt, i) => {
-              const code = ['A', 'B', 'C', 'D'][i] || String(i + 1);
+              const code = ['A','B','C','D'][i] || String(i+1);
               const checked = app.answers[q.id] === opt.value ? 'checked' : '';
-              return `
-                <label class="option">
-                  <input type="radio" name="${q.id}" value="${opt.value}" ${checked} />
-                  <div class="option-code">${code}</div>
-                  <div>${opt.label}</div>
-                </label>
-              `;
+              return `<label class="option"><input type="radio" name="${q.id}" value="${opt.value}" ${checked} /><div class="option-code">${code}</div><div>${opt.label}</div></label>`;
             }).join('')}
           </div>
-        `;
-        questionList.appendChild(card);
-      });
+        </article>
+      `;
+
+      const answered = visibleQuestions.filter(qq => app.answers[qq.id] !== undefined).length;
+      const allDone = answered === total && total > 0;
+
+      progressBar.style.width = `${((idx + 1) / total) * 100}%`;
+      progressText.textContent = `${answered} / ${total} 已答`;
+
+      const prevQBtn = document.getElementById('prevQBtn');
+      const nextQBtn = document.getElementById('nextQBtn');
+      prevQBtn.style.display = idx === 0 ? 'none' : '';
+      nextQBtn.style.display = isLast ? 'none' : '';
+      submitBtn.style.display = isLast ? '' : 'none';
+      submitBtn.disabled = !allDone;
+      testHint.textContent = allDone
+        ? '都做完了。现在可以把你的电子魂魄交给结果页审判。'
+        : isLast ? '答完最后一题就可以提交了。' : `已答 ${answered} 题，还有 ${total - answered} 题未作答。`;
 
       questionList.querySelectorAll('input[type="radio"]').forEach(input => {
         input.addEventListener('change', (e) => {
-          const { name, value } = e.target;
-          app.answers[name] = Number(value);
-
-          if (name === 'drink_gate_q1') {
-            if (Number(value) !== 3) {
-              delete app.answers['drink_gate_q2'];
-            }
-            renderQuestions();
-            return;
+          app.answers[e.target.name] = Number(e.target.value);
+          if (e.target.name === 'drink_gate_q1' && Number(e.target.value) !== 3) {
+            delete app.answers['drink_gate_q2'];
           }
-
-          updateProgress();
+          setTimeout(() => {
+            const vis = getVisibleQuestions();
+            if (app.currentQIndex < vis.length - 1) {
+              app.currentQIndex++;
+            }
+            renderCurrentQuestion();
+          }, 280);
         });
       });
-
-      updateProgress();
-    }
-
-    function updateProgress() {
-      const visibleQuestions = getVisibleQuestions();
-      const total = visibleQuestions.length;
-      const done = visibleQuestions.filter(q => app.answers[q.id] !== undefined).length;
-      const percent = total ? (done / total) * 100 : 0;
-      progressBar.style.width = `${percent}%`;
-      progressText.textContent = `${done} / ${total}`;
-      const complete = done === total && total > 0;
-      submitBtn.disabled = !complete;
-      testHint.textContent = complete
-        ? '都做完了。现在可以把你的电子魂魄交给结果页审判。'
-        : '全选完才会放行。世界已经够乱了，起码把题做完整。';
     }
 
     function sumToLevel(score) {
@@ -2049,7 +2125,8 @@
         specialQuestions[0],
         ...shuffledRegular.slice(insertIndex)
       ];
-      renderQuestions();
+      app.currentQIndex = 0;
+      renderCurrentQuestion();
       showScreen('test');
     }
 
@@ -2109,6 +2186,13 @@
     document.getElementById('submitBtn').addEventListener('click', renderResult);
     document.getElementById('restartBtn').addEventListener('click', () => startTest(false));
     document.getElementById('toTopBtn').addEventListener('click', () => showScreen('intro'));
+    document.getElementById('prevQBtn').addEventListener('click', () => {
+      if (app.currentQIndex > 0) { app.currentQIndex--; renderCurrentQuestion(); }
+    });
+    document.getElementById('nextQBtn').addEventListener('click', () => {
+      const vis = getVisibleQuestions();
+      if (app.currentQIndex < vis.length - 1) { app.currentQIndex++; renderCurrentQuestion(); }
+    });
   </script>
 
 </body>
