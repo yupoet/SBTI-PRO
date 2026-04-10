@@ -14,3 +14,6 @@ logs
 .env
 .env.*
 !.env.example
+.gitnexus
+# Wrangler local cache — contains oauth2_token, never commit
+.wrangler/
