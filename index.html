@@ -3296,78 +3296,138 @@
     })();
     // ── End Stats ───────────────────────────────────────────
 
-    // ── Share Site ───────────────────────────────────────────
+    // ── Share Site — 生成海报图片 ────────────────────────────
+    function generateHomepagePoster() {
+      const W = 750, H = 1200;
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // ── Background ──
+      const bg = ctx.createLinearGradient(0, 0, W * 0.6, H);
+      bg.addColorStop(0,   '#18261C');
+      bg.addColorStop(0.5, '#102033');
+      bg.addColorStop(1,   '#18261C');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Subtle grain
+      ctx.fillStyle = 'rgba(255,255,255,0.018)';
+      for (var g = 0; g < 3000; g++) {
+        ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+      }
+
+      // ── Top accent bar ──
+      var bar = ctx.createLinearGradient(0, 0, W, 0);
+      bar.addColorStop(0,   '#517CA8');
+      bar.addColorStop(0.5, '#6BBBD0');
+      bar.addColorStop(1,   '#517CA8');
+      ctx.fillStyle = bar;
+      ctx.fillRect(0, 0, W, 8);
+
+      // ── "SBTI" display text ──
+      ctx.textAlign = 'center';
+      var sbtiGrad = ctx.createLinearGradient(W/2 - 240, 0, W/2 + 240, 0);
+      sbtiGrad.addColorStop(0, '#517CA8');
+      sbtiGrad.addColorStop(1, '#6BBBD0');
+      ctx.fillStyle = sbtiGrad;
+      ctx.font = 'bold italic 210px Impact,"Arial Black",sans-serif';
+      ctx.fillText('SBTI', W/2, 270);
+
+      // ── 人格测试 tagline ──
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.font = '40px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+      ctx.letterSpacing = '0.2em';
+      ctx.fillText('人格测试', W/2, 328);
+      ctx.letterSpacing = '';
+
+      // ── Divider ──
+      ctx.strokeStyle = 'rgba(81,124,168,0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(80, 366); ctx.lineTo(W - 80, 366); ctx.stroke();
+
+      // ── Headline ──
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 54px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+      ctx.fillText('MBTI 已经过时', W/2, 450);
+      var accentLine = ctx.createLinearGradient(W/2 - 150, 0, W/2 + 150, 0);
+      accentLine.addColorStop(0, '#517CA8');
+      accentLine.addColorStop(1, '#6BBBD0');
+      ctx.fillStyle = accentLine;
+      ctx.font = 'bold 70px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+      ctx.fillText('SBTI 来了', W/2, 540);
+
+      // ── Stats line ──
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '26px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+      ctx.fillText('17 个维度  ·  38 种人格  ·  比 MBTI 更懂你的电子灵魂', W/2, 596);
+
+      // ── Type chips grid ──
+      var allT = Object.values(TYPE_LIBRARY).filter(function(t) {
+        return t.code !== 'DRUNK' && t.code !== 'HHHH';
+      });
+      var chipW = 100, chipH = 38, gapX = 14, gapY = 10;
+      var cols = 6;
+      var gridW = cols * chipW + (cols - 1) * gapX;
+      var sx = (W - gridW) / 2, sy = 636;
+      var chipPalette = ['#1E3D5A','#1E4A30','#3A2E5A','#5A3A1E','#1E4A4A','#4A1E3A'];
+      allT.slice(0, 30).forEach(function(t, i) {
+        var col = i % cols, row = Math.floor(i / cols);
+        var cx = sx + col * (chipW + gapX);
+        var cy = sy + row * (chipH + gapY);
+        ctx.fillStyle = chipPalette[i % chipPalette.length];
+        roundRect(ctx, cx, cy, chipW, chipH, 8); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.88)';
+        ctx.font = 'bold 18px ui-monospace,monospace,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(t.code, cx + chipW / 2, cy + chipH / 2 + 6);
+      });
+
+      // ── Second divider ──
+      ctx.strokeStyle = 'rgba(81,124,168,0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(80, 900); ctx.lineTo(W - 80, 900); ctx.stroke();
+
+      // ── QR code ──
+      var qrSize = 196, qrX = (W - qrSize) / 2, qrY = 924;
+      try {
+        var qr = qrcode(0, 'M');
+        qr.addData('https://sbti.ytht.io');
+        qr.make();
+        var mc = qr.getModuleCount(), cell = qrSize / mc;
+        ctx.fillStyle = '#ffffff';
+        roundRect(ctx, qrX - 16, qrY - 16, qrSize + 32, qrSize + 32, 14); ctx.fill();
+        ctx.fillStyle = '#18261C';
+        for (var r = 0; r < mc; r++) {
+          for (var c = 0; c < mc; c++) {
+            if (qr.isDark(r, c)) ctx.fillRect(qrX + c * cell, qrY + r * cell, cell, cell);
+          }
+        }
+      } catch(e) {}
+
+      // ── Domain + CTA ──
+      var accentDom = ctx.createLinearGradient(W/2 - 100, 0, W/2 + 100, 0);
+      accentDom.addColorStop(0, '#517CA8'); accentDom.addColorStop(1, '#6BBBD0');
+      ctx.fillStyle = accentDom;
+      ctx.font = 'bold 30px ui-monospace,monospace,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('sbti.ytht.io', W/2, 1158);
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '22px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+      ctx.fillText('扫码测出你的电子灵魂', W/2, 1188);
+
+      var dataUrl = canvas.toDataURL('image/png');
+      var modal = document.getElementById('shareImgModal');
+      var img   = document.getElementById('shareImgOutput');
+      img.src   = dataUrl;
+      modal.classList.add('open');
+      document.getElementById('shareImgDownload')._dataUrl  = dataUrl;
+      document.getElementById('shareImgDownload')._typeCode = 'homepage';
+    }
+
     (function initShareSite() {
-      const fab      = document.getElementById('shareSiteBtn');
-      const overlay  = document.getElementById('shareSiteOverlay');
-      const closeBtn = document.getElementById('shareSiteClose');
-      const qrEl     = document.getElementById('shareSiteQr');
-      const copyBtn  = document.getElementById('shareSiteCopy');
-      const nativeBtn = document.getElementById('shareSiteNative');
-      const SHARE_URL = 'https://sbti.ytht.io';
-      let qrGenerated = false;
-
-      if (navigator.share) {
-        nativeBtn.style.display = '';
-        nativeBtn.addEventListener('click', function() {
-          navigator.share({
-            title: 'SBTI 人格测试',
-            text: '17维度，38种人格，比MBTI更懂你的电子灵魂。',
-            url: SHARE_URL
-          }).catch(function() {});
-        });
-      }
-
-      function openShare() {
-        overlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        if (!qrGenerated) {
-          qrGenerated = true;
-          const qr = qrcode(0, 'M');
-          qr.addData(SHARE_URL);
-          qr.make();
-          qrEl.innerHTML = qr.createImgTag(4, 0);
-        }
-      }
-
-      function closeShare() {
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-
-      addTap(fab, openShare);
-      closeBtn.addEventListener('click', closeShare);
-      overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) closeShare();
-      });
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && overlay.classList.contains('open')) closeShare();
-      });
-
-      copyBtn.addEventListener('click', function() {
-        var orig = copyBtn.textContent;
-        function copied() {
-          copyBtn.textContent = '已复制 ✓';
-          setTimeout(function() { copyBtn.textContent = orig; }, 2000);
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(SHARE_URL).then(copied).catch(function() {
-            fallbackCopy(); copied();
-          });
-        } else {
-          fallbackCopy(); copied();
-        }
-        function fallbackCopy() {
-          var ta = document.createElement('textarea');
-          ta.value = SHARE_URL;
-          ta.style.position = 'fixed';
-          ta.style.opacity = '0';
-          document.body.appendChild(ta);
-          ta.select();
-          try { document.execCommand('copy'); } catch(e) {}
-          document.body.removeChild(ta);
-        }
-      });
+      var fab = document.getElementById('shareSiteBtn');
+      addTap(fab, generateHomepagePoster);
     })();
     // ── End Share Site ───────────────────────────────────────────
   </script>
