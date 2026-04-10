@@ -158,6 +158,7 @@
       border-radius: 14px; border: 2px solid transparent;
       cursor: pointer; transition: border-color .15s, background .15s;
       text-align: center;
+      -webkit-tap-highlight-color: transparent;
     }
     .wiki-cell:hover, .wiki-cell:focus { background: var(--soft); border-color: var(--accent); outline: none; }
     .wiki-cell.active { background: var(--soft); border-color: var(--accent-strong); }
@@ -176,18 +177,18 @@
       padding: 24px; display: flex; gap: 24px; align-items: flex-start;
       scroll-margin-top: 20px;
     }
-    @media (max-width: 600px) { .wiki-entry { flex-direction: column; } }
     .wiki-entry-img {
-      width: 160px; height: 160px; flex-shrink: 0;
-      object-fit: cover; border-radius: 14px;
+      width: 120px; height: 120px; flex-shrink: 0;
+      object-fit: contain; border-radius: 14px;
     }
     .wiki-entry-img-placeholder {
-      width: 160px; height: 160px; flex-shrink: 0;
+      width: 120px; height: 120px; flex-shrink: 0;
       border-radius: 14px; background: var(--soft);
       display: flex; align-items: center; justify-content: center; font-size: 52px;
     }
     @media (max-width: 600px) {
-      .wiki-entry-img, .wiki-entry-img-placeholder { width: 100%; height: 180px; }
+      .wiki-entry { flex-direction: column; align-items: center; }
+      .wiki-entry-img, .wiki-entry-img-placeholder { width: 100px; height: 100px; flex-shrink: 0; }
     }
     .wiki-entry-body { flex: 1; min-width: 0; }
     .wiki-entry-title { margin: 0 0 4px; font-size: 20px; font-weight: 800; color: var(--accent-strong); }
@@ -230,7 +231,7 @@
   <div class="wiki-entries" id="wikiEntries"></div>
 
   <footer class="wiki-footer">
-    <p>SBTI-PRO · <a href="/">开始测试</a> · <a href="https://github.com/yupoet/SBTI-PRO" target="_blank" rel="noopener">开源地址</a></p>
+    <p>SBTI-PRO · <a href="/">开始测试</a></p>
   </footer>
 
 </div>
@@ -637,8 +638,9 @@ function renderGrid() {
     const hasImg = !!img;
     return `<div class="wiki-cell" id="${cellId(code)}"
                  role="button" tabindex="0"
-                 onclick="scrollToEntry(${JSON.stringify(code)})"
-                 onkeydown="if(event.key==='Enter'||event.key===' ')scrollToEntry(${JSON.stringify(code)})"
+                 data-code="${code.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"
+                 onclick="scrollToEntry(this.dataset.code)"
+                 onkeydown="if(event.key==='Enter'||event.key===' ')scrollToEntry(this.dataset.code)"
                  title="${t.cn}">
       ${hasImg ? `<img src="${img}" alt="${code} ${t.cn}" loading="lazy"
                       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
@@ -673,7 +675,14 @@ function renderEntries() {
 
 function scrollToEntry(code) {
   const el = document.getElementById(entryId(code));
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!el) return;
+  // Highlight active cell
+  document.querySelectorAll('.wiki-cell.active').forEach(c => c.classList.remove('active'));
+  const cell = document.getElementById(cellId(code));
+  if (cell) cell.classList.add('active');
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 20;
+  // Use two-argument form — guaranteed to work in all browsers including WeChat WKWebView
+  window.scrollTo(0, top);
 }
 
 function initObserver() {

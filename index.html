@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>SBTI 人格测试</title>
   <meta name="description" content="SBTI（Soul Bytes Type Indicator）人格测试——电子时代的自我认知工具。17 个心理维度，38 种人格类型，41 道题，测出你的真实底色。比 MBTI 更懂你的电子灵魂。" />
   <meta property="og:type" content="website" />
@@ -127,6 +127,7 @@
         radial-gradient(circle at top left, #f5f9fd 0, #FAFAF8 36%, #f2f6fa 100%);
       color: var(--text);
       min-height: 100vh;
+      touch-action: manipulation;
     }
 
     .shell {
@@ -278,6 +279,14 @@
       font-weight: 700;
     }
 
+    /* wiki link styled as a button */
+    a.btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
     .screen { display: none; }
     .screen.active { display: block; }
 
@@ -319,6 +328,20 @@
       color: var(--muted);
       font-size: 13px;
       white-space: nowrap;
+    }
+    .resume-banner {
+      display: none;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border: 1px solid rgba(81, 124, 168, 0.22);
+      border-radius: 14px;
+      background: rgba(81, 124, 168, 0.08);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .resume-banner.active {
+      display: block;
     }
 
     .question-list {
@@ -369,11 +392,13 @@
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      padding: 14px 14px;
+      padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid var(--line);
       background: #fff;
       transition: border-color .16s ease, background .16s ease, transform .16s ease;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .option:hover {
@@ -1194,6 +1219,26 @@
       transform: translateY(-1px);
     }
 
+    /* ── hero friend links footer ── */
+    .hero-friend-links {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      opacity: 0.7;
+    }
+    .hero-friend-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: opacity .15s ease;
+    }
+    .hero-friend-links a:hover {
+      opacity: 1;
+      color: var(--accent-strong);
+    }
+
     /* ── type-gallery accordion ── */
     .type-gallery-details {
       margin-top: 0;
@@ -1237,9 +1282,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-top: 18px;
+      margin-top: 14px;
+    }
+    .q-nav .btn-primary, .q-nav .btn-secondary {
+      padding: 9px 14px;
+      font-size: 14px;
+      border-radius: 12px;
     }
     .question-single {
       min-height: calc(70dvh - 80px);
@@ -1458,28 +1508,13 @@
         <div class="hero-actions hero-actions-single">
           <button id="startBtn" class="btn-primary">开始测试</button>
           <button id="previewBtn" class="btn-secondary">预览模式（显示维度标签）</button>
+          <a href="/wiki" class="btn-secondary">类型图鉴</a>
         </div>
         <a href="https://sbti.ytht.io" class="hero-domain-center">sbti.ytht.io</a>
-        <div class="hero-meta">
-          <div class="hero-meta-links">
-            <span class="hero-meta-links-label">友情链接</span>
-            <a href="https://bbs.ytht.io" target="_blank" rel="noopener" class="hero-meta-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              一塌糊涂 BBS
-            </a>
-            <a href="https://game.ytht.io" target="_blank" rel="noopener" class="hero-meta-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              修仙 MUD
-            </a>
-            <a href="https://github.com/yupoet/SBTI-PRO" target="_blank" rel="noopener" class="hero-meta-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-              Pro版开源地址
-            </a>
-            <a href="/wiki" class="hero-meta-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              SBTI Wiki（类型图鉴）
-            </a>
-          </div>
+        <div class="hero-friend-links">
+          <a href="https://bbs.ytht.io" target="_blank" rel="noopener">一塌糊涂 BBS</a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://game.ytht.io" target="_blank" rel="noopener">修仙 MUD</a>
         </div>
       </div>
       <details class="type-gallery-details">
@@ -1497,6 +1532,7 @@
           <div class="progress-text" id="progressText">0 / 31</div>
         </div>
 
+        <div id="resumeBanner" class="resume-banner" role="status" aria-live="polite"></div>
         <div id="questionList"></div>
 
         <div class="actions-bottom">
@@ -1564,7 +1600,6 @@
           <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
             <button id="restartBtn" class="btn-secondary">重新测试</button>
             <button id="toTopBtn" class="btn-primary">回到首页</button>
-            <button id="shareBtn" class="share-btn">分享我的结果 🔗</button>
             <button id="genImgBtn" class="share-btn">生成分享图片 🖼</button>
             <span id="shareToast" class="share-toast">链接已复制！</span>
           </div>
@@ -2532,6 +2567,8 @@
     const dimensionOrder = ['S1','S2','S3','E1','E2','E3','A1','A2','A3','Ac1','Ac2','Ac3','So1','So2','So3','N1','N2'];
 
     const DRUNK_TRIGGER_QUESTION_ID = 'drink_gate_q2';
+    const PROGRESS_STORAGE_KEY = 'sbti-progress-v1';
+    const PROGRESS_STORAGE_VERSION = 1;
 
     const app = {
       shuffledQuestions: [],
@@ -2551,12 +2588,22 @@
     const progressText = document.getElementById('progressText');
     const submitBtn = document.getElementById('submitBtn');
     const testHint = document.getElementById('testHint');
+    const resumeBanner = document.getElementById('resumeBanner');
 
     function showScreen(name) {
       Object.entries(screens).forEach(([key, el]) => {
         el.classList.toggle('active', key === name);
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Only show original author credit on homepage
+      const credit = document.querySelector('.site-author-credit');
+      if (credit) credit.style.display = (name === 'intro') ? '' : 'none';
+    }
+
+    function setResumeBanner(message) {
+      if (!resumeBanner) return;
+      resumeBanner.textContent = message || '';
+      resumeBanner.classList.toggle('active', Boolean(message));
     }
 
     function shuffle(array) {
@@ -2580,6 +2627,105 @@
     function getQuestionMetaLabel(q) {
       if (q.special) return '补充题';
       return app.previewMode ? dimensionMeta[q.dim].name : '维度已隐藏';
+    }
+
+    function clearHashFragment() {
+      if (!location.hash) return;
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+
+    function getProgressQuestionIds() {
+      return app.shuffledQuestions.map(q => q.id);
+    }
+
+    function buildQuestionOrderFromIds(ids) {
+      if (!Array.isArray(ids) || !ids.length) return null;
+      const regularMap = Object.fromEntries(questions.map(q => [q.id, q]));
+      const firstSpecial = specialQuestions[0];
+      const expectedSize = questions.length + 1;
+      if (ids.length !== expectedSize) return null;
+
+      const seen = new Set();
+      const rebuilt = [];
+      for (const id of ids) {
+        if (seen.has(id)) return null;
+        seen.add(id);
+        if (id === firstSpecial.id) {
+          rebuilt.push(firstSpecial);
+          continue;
+        }
+        if (!regularMap[id]) return null;
+        rebuilt.push(regularMap[id]);
+      }
+
+      if (!seen.has(firstSpecial.id)) return null;
+      if (Object.keys(regularMap).some(id => !seen.has(id))) return null;
+      return rebuilt;
+    }
+
+    function readSavedProgress() {
+      try {
+        const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || parsed.version !== PROGRESS_STORAGE_VERSION) return null;
+
+        const shuffledQuestions = buildQuestionOrderFromIds(parsed.shuffledQuestionIds);
+        if (!shuffledQuestions) return null;
+
+        const normalizedAnswers = {};
+        const answers = parsed.answers && typeof parsed.answers === 'object' ? parsed.answers : {};
+        Object.entries(answers).forEach(([key, value]) => {
+          const num = Number(value);
+          if (Number.isFinite(num)) normalizedAnswers[key] = num;
+        });
+
+        return {
+          previewMode: Boolean(parsed.previewMode),
+          currentQIndex: Number.isInteger(parsed.currentQIndex) ? parsed.currentQIndex : 0,
+          shuffledQuestions,
+          answers: normalizedAnswers
+        };
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function clearSavedProgress() {
+      try {
+        localStorage.removeItem(PROGRESS_STORAGE_KEY);
+      } catch (err) {
+        // localStorage 不可用时直接忽略
+      }
+    }
+
+    function persistProgress() {
+      if (!app.shuffledQuestions.length) return;
+      try {
+        localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify({
+          version: PROGRESS_STORAGE_VERSION,
+          previewMode: app.previewMode,
+          currentQIndex: app.currentQIndex,
+          shuffledQuestionIds: getProgressQuestionIds(),
+          answers: app.answers,
+          savedAt: Date.now()
+        }));
+      } catch (err) {
+        // 存储失败不阻塞答题流程
+      }
+    }
+
+    function restoreSavedProgress(saved) {
+      if (!saved) return false;
+      clearHashFragment();
+      app.previewMode = saved.previewMode;
+      app.shuffledQuestions = saved.shuffledQuestions;
+      app.answers = saved.answers;
+      app.currentQIndex = saved.currentQIndex;
+      setResumeBanner('已自动恢复上次未完成的测试进度。想重开的话，直接重新测试即可。');
+      renderCurrentQuestion();
+      showScreen('test');
+      return true;
     }
 
     function renderCurrentQuestion() {
@@ -2630,6 +2776,7 @@
           if (e.target.name === 'drink_gate_q1' && Number(e.target.value) !== 3) {
             delete app.answers['drink_gate_q2'];
           }
+          persistProgress();
           setTimeout(() => {
             const vis = getVisibleQuestions();
             if (app.currentQIndex < vis.length - 1) {
@@ -2820,6 +2967,8 @@
       }
       renderDimList(result);
       showScreen('result');
+      setResumeBanner('');
+      clearSavedProgress();
       history.replaceState(null, '', '#' + type.code);
       trackResult(type.code);
     }
@@ -2856,6 +3005,7 @@
     }
 
     function startTest(preview = false) {
+      clearHashFragment();
       app.previewMode = preview;
       app.answers = {};
       const shuffledRegular = shuffle(questions);
@@ -2866,6 +3016,8 @@
         ...shuffledRegular.slice(insertIndex)
       ];
       app.currentQIndex = 0;
+      setResumeBanner('');
+      persistProgress();
       renderCurrentQuestion();
       showScreen('test');
     }
@@ -3016,7 +3168,7 @@
         ctx.fillText('sbti.ytht.io', qrX + qrSize + 36, qrY + 136);
 
         // ── Render ──
-        const dataUrl = canvas.toDataURL('image/png');
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
         const modal = document.getElementById('shareImgModal');
         const img = document.getElementById('shareImgOutput');
         img.src = dataUrl;
@@ -3068,24 +3220,9 @@
       return lines;
     }
 
-    // 分享按钮
-    document.getElementById('shareBtn').addEventListener('click', () => {
-      const url = location.href.split('#')[0] + location.hash;
-      const toast = document.getElementById('shareToast');
-      if (navigator.share) {
-        navigator.share({ title: 'SBTI 人格测试结果', url }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(url).then(() => {
-          toast.classList.add('show');
-          setTimeout(() => toast.classList.remove('show'), 2000);
-        });
-      }
-    });
-
-    // 从 URL hash 直接恢复结果页
-    (function initFromHash() {
+    function restoreSharedResultFromHash() {
       const hash = location.hash.replace('#', '').trim();
-      if (!hash || !TYPE_LIBRARY[hash]) return;
+      if (!hash || !TYPE_LIBRARY[hash]) return false;
       app.answers = {};
       questions.forEach(q => { app.answers[q.id] = 2; });
       specialQuestions.forEach(q => { app.answers[q.id] = 1; });
@@ -3115,22 +3252,35 @@
       const dimList = document.getElementById('dimList');
       if (dimList) dimList.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:8px 0">通过分享链接查看时不显示维度详情</div>';
       showScreen('result');
+      return true;
+    }
+
+    (function initProgressState() {
+      if (restoreSharedResultFromHash()) return;
+      const saved = readSavedProgress();
+      if (saved) {
+        restoreSavedProgress(saved);
+      }
     })();
 
     renderTypeGrid();
     document.getElementById('startBtn').addEventListener('click', () => startTest(false));
     document.getElementById('previewBtn').addEventListener('click', () => startTest(true));
-    document.getElementById('backIntroBtn').addEventListener('click', () => showScreen('intro'));
+    document.getElementById('backIntroBtn').addEventListener('click', () => {
+      persistProgress();
+      showScreen('intro');
+    });
     document.getElementById('submitBtn').addEventListener('click', renderResult);
     document.getElementById('restartBtn').addEventListener('click', () => startTest(false));
     document.getElementById('toTopBtn').addEventListener('click', () => showScreen('intro'));
     document.getElementById('prevQBtn').addEventListener('click', () => {
-      if (app.currentQIndex > 0) { app.currentQIndex--; renderCurrentQuestion(); }
+      if (app.currentQIndex > 0) { app.currentQIndex--; persistProgress(); renderCurrentQuestion(); }
     });
     document.getElementById('nextQBtn').addEventListener('click', () => {
       const vis = getVisibleQuestions();
-      if (app.currentQIndex < vis.length - 1) { app.currentQIndex++; renderCurrentQuestion(); }
+      if (app.currentQIndex < vis.length - 1) { app.currentQIndex++; persistProgress(); renderCurrentQuestion(); }
     });
+    window.addEventListener('pagehide', persistProgress);
 
     document.getElementById('genImgBtn').addEventListener('click', generateShareImage);
     document.getElementById('shareImgClose').addEventListener('click', () => {
@@ -3141,7 +3291,7 @@
     });
     document.getElementById('shareImgDownload').addEventListener('click', function() {
       const a = document.createElement('a');
-      a.download = 'SBTI-' + (this._typeCode || 'result') + '.png';
+      a.download = 'SBTI-' + (this._typeCode || 'result') + '.jpg';
       a.href = this._dataUrl || '';
       a.click();
     });
@@ -3416,7 +3566,7 @@
       ctx.font = '22px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
       ctx.fillText('扫码测出你的电子灵魂', W/2, 1188);
 
-      var dataUrl = canvas.toDataURL('image/png');
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
       var modal = document.getElementById('shareImgModal');
       var img   = document.getElementById('shareImgOutput');
       img.src   = dataUrl;
@@ -3430,6 +3580,18 @@
       addTap(fab, generateHomepagePoster);
     })();
     // ── End Share Site ───────────────────────────────────────────
+
+    // ── Prevent double-tap zoom (WeChat WKWebView ignores user-scalable=no) ──
+    (function preventDoubleTapZoom() {
+      var lastTouch = 0;
+      document.addEventListener('touchend', function(e) {
+        var now = Date.now();
+        if (now - lastTouch < 300) {
+          e.preventDefault();
+        }
+        lastTouch = now;
+      }, { passive: false });
+    })();
   </script>
 
 </body>
