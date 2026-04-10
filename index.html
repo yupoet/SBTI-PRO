@@ -225,6 +225,7 @@
       margin-top: 22px;
     }
     .hero-minimal {
+      position: relative;
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
@@ -996,10 +997,10 @@
 
     /* ── 原作者 fixed 右下角 ── */
     .site-author-credit {
-      position: fixed;
-      bottom: 14px;
-      right: 16px;
-      z-index: 200;
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
       display: flex;
       align-items: center;
       gap: 5px;
@@ -1015,18 +1016,24 @@
       color: var(--accent-strong);
       font-weight: 600;
     }
+    /* ── Hero FABs wrapper (inside hero card) ── */
+    .hero-fabs {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
     .stats-fab {
-      position: fixed;
-      bottom: 50px;
-      right: 16px;
-      z-index: 200;
       background: none;
       border: none;
       cursor: pointer;
       font-size: 18px;
       opacity: 0.45;
       transition: opacity .2s ease, transform .15s ease;
-      padding: 8px;
+      padding: 6px;
       line-height: 1;
       touch-action: manipulation;
       -webkit-transform: translateZ(0);
@@ -1036,12 +1043,8 @@
 
     /* ── Share Site FAB ── */
     .share-site-fab {
-      position: fixed;
-      bottom: 96px;
-      right: 16px;
-      z-index: 200;
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       background: none;
       border: none;
       cursor: pointer;
@@ -1227,16 +1230,14 @@
       font-size: 11px;
       color: var(--muted);
       text-align: center;
-      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    .hero-friend-links a {
-      color: var(--muted);
-      text-decoration: none;
-      transition: opacity .15s ease;
-    }
-    .hero-friend-links a:hover {
-      opacity: 1;
-      color: var(--accent-strong);
+    .hero-friend-links .friend-links-label {
+      opacity: 0.65;
     }
 
     /* ── type-gallery accordion ── */
@@ -1490,20 +1491,12 @@
   </style>
 </head>
 <body>
-  <button class="share-site-fab" id="shareSiteBtn" title="分享首页" aria-label="分享 SBTI 首页">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-    </svg>
-  </button>
-  <button class="stats-fab" id="statsBtn" title="查看测试统计">📊</button>
-  <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="site-author-credit">
-    <span>原作者</span><strong>B站@蛆肉儿串儿</strong>
-  </a>
   <div class="shell">
     <section id="intro" class="screen active">
       <div class="hero card hero-minimal">
+        <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="site-author-credit">
+          <span>原作者</span><strong>B站@蛆肉儿串儿</strong>
+        </a>
         <h1>MBTI已经过时，<br><span class="sbti-brand">SBTI</span> 来了。</h1>
         <div class="hero-actions hero-actions-single">
           <button id="startBtn" class="btn-primary">开始测试</button>
@@ -1512,9 +1505,19 @@
         </div>
         <a href="https://sbti.ytht.io" class="hero-domain-center">sbti.ytht.io</a>
         <div class="hero-friend-links">
-          <a href="https://bbs.ytht.io" target="_blank" rel="noopener">一塌糊涂 BBS</a>
-          <span aria-hidden="true"> · </span>
-          <a href="https://game.ytht.io" target="_blank" rel="noopener">修仙 MUD</a>
+          <span class="friend-links-label">友情链接：</span>
+          <a href="https://bbs.ytht.io" target="_blank" rel="noopener" class="hero-meta-link">一塌糊涂 BBS</a>
+          <a href="https://game.ytht.io" target="_blank" rel="noopener" class="hero-meta-link">修仙 MUD</a>
+        </div>
+        <div class="hero-fabs">
+          <button class="share-site-fab" id="shareSiteBtn" title="分享首页" aria-label="分享 SBTI 首页">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
+          <button class="stats-fab" id="statsBtn" title="查看测试统计">📊</button>
         </div>
       </div>
       <details class="type-gallery-details">
@@ -2595,9 +2598,6 @@
         el.classList.toggle('active', key === name);
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Only show original author credit on homepage
-      const credit = document.querySelector('.site-author-credit');
-      if (credit) credit.style.display = (name === 'intro') ? '' : 'none';
     }
 
     function setResumeBanner(message) {
