@@ -1001,8 +1001,11 @@
       font-size: 18px;
       opacity: 0.45;
       transition: opacity .2s ease, transform .15s ease;
-      padding: 2px;
+      padding: 8px;
       line-height: 1;
+      touch-action: manipulation;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
     }
     .stats-fab:hover { opacity: 1; transform: scale(1.15); }
 
@@ -1012,19 +1015,21 @@
       bottom: 96px;
       right: 16px;
       z-index: 200;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       background: none;
       border: none;
       cursor: pointer;
       opacity: 0.45;
       transition: opacity .2s ease, transform .15s ease;
-      padding: 0;
+      padding: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--accent-strong);
       touch-action: manipulation;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
     }
     .share-site-fab:hover { opacity: 1; transform: scale(1.15); }
 
@@ -3120,6 +3125,21 @@
       }).catch(() => {});
     }
 
+    // WeChat WebView fix: touchend fires reliably on position:fixed elements;
+    // click may be swallowed. addTap uses touchend, then suppresses the ghost click.
+    function addTap(el, fn) {
+      var touched = false;
+      el.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        touched = true;
+        fn(e);
+      }, { passive: false });
+      el.addEventListener('click', function(e) {
+        if (touched) { touched = false; return; }
+        fn(e);
+      });
+    }
+
     (function initStats() {
       const btn      = document.getElementById('statsBtn');
       const overlay  = document.getElementById('statsOverlay');
@@ -3144,7 +3164,7 @@
         document.body.style.overflow = '';
       }
 
-      btn.addEventListener('click', openStats);
+      addTap(btn, openStats);
       closeBtn.addEventListener('click', closeStats);
       overlay.addEventListener('click', function(e) {
         if (e.target === overlay) closeStats();
@@ -3285,7 +3305,7 @@
         document.body.style.overflow = '';
       }
 
-      fab.addEventListener('click', openShare);
+      addTap(fab, openShare);
       closeBtn.addEventListener('click', closeShare);
       overlay.addEventListener('click', function(e) {
         if (e.target === overlay) closeShare();
