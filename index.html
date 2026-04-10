@@ -19,17 +19,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* NCB Pastel-A palette (Paper 1 & 2) */
-      --bg: #FAFAF8;
-      --panel: #ffffff;
-      --text: #1e2a22;
-      --muted: #6A7A82;
-      --line: #BDBA9E;
-      --soft: #EEF3F8;
-      --accent: #4C91C1;
-      --accent-strong: #3A7BA8;
-      --shadow: 0 16px 40px rgba(44, 82, 130, 0.08);
-      --radius: 22px;
+      /* NCB Dual Palette — aligned with docs/design/color-system.css */
+      --pastel-steelblue: #4C91C1;
+      --pastel-sage:      #BDBA9E;
+      --pastel-teal:      #94C8CD;
+      --pastel-skyblue:   #B7E1F5;
+      --pastel-apricot:   #F8D9B1;
+      --pastel-wheat:     #EED692;
+      --vivid-navy:       #517CA8;
+      --vivid-cyan:       #65AFC1;
+
+      /* SBTI-PRO semantic tokens */
+      --bg:           #FAFAF8;
+      --panel:        #ffffff;
+      --text:         #1e2a22;
+      --muted:        #6A7A82;
+      --line:         var(--pastel-sage);
+      --soft:         #EEF3F8;
+      --accent:       var(--pastel-steelblue);
+      --accent-strong: var(--vivid-navy);
+      --shadow:       0 16px 40px rgba(81, 124, 168, 0.10);
+      --radius:       22px;
     }
 
     * { box-sizing: border-box; }
@@ -137,6 +147,7 @@
       margin-top: 22px;
     }
     .hero-minimal {
+      min-height: 100vh;
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
@@ -144,6 +155,13 @@
       align-items: center;
       text-align: center;
       padding: 42px 20px;
+    }
+    @media (max-width: 768px) {
+      .hero-minimal {
+        min-height: 85vh;
+        min-height: 85dvh;
+        padding: 32px 20px 24px;
+      }
     }
     .hero-minimal::after { display: none; }
     .hero-minimal h1 {
@@ -215,7 +233,7 @@
       display: block;
       width: 0;
       height: 100%;
-      background: linear-gradient(90deg, #94C8CD, #4C91C1);
+      background: linear-gradient(90deg, var(--pastel-teal), var(--accent));
       border-radius: inherit;
       transition: width .22s ease;
     }
@@ -891,10 +909,9 @@
     .hero-meta-domain:hover { color: var(--accent-strong); }
     .hero-meta-links {
       display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
     }
     .hero-meta-links-label {
       font-size: 12px;
@@ -993,7 +1010,7 @@
   <div class="shell">
     <section id="intro" class="screen active">
       <div class="hero card hero-minimal">
-        <h1>MBTI已经过时，<span class="sbti-brand">SBTI</span>来了。</h1>
+        <h1>MBTI已经过时，<br><span class="sbti-brand">SBTI</span> 来了。</h1>
         <div class="hero-actions hero-actions-single">
           <button id="startBtn" class="btn-primary">开始测试</button>
           <button id="previewBtn" class="btn-secondary">预览模式（显示维度标签）</button>
