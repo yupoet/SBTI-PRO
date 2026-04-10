@@ -1763,106 +1763,31 @@
 };
 
     const NORMAL_TYPES = [
-  {
-    "code": "CTRL",
-    "pattern": "HHH-HMH-MHH-HHH-MHM"
-  },
-  {
-    "code": "ATM-er",
-    "pattern": "HHH-HHM-HHH-HMH-MHL"
-  },
-  {
-    "code": "Dior-s",
-    "pattern": "MHM-MMH-MHM-HMH-LHL"
-  },
-  {
-    "code": "BOSS",
-    "pattern": "HHH-HMH-MMH-HHH-LHL"
-  },
-  {
-    "code": "THAN-K",
-    "pattern": "MHM-HMM-HHM-MMH-MHL"
-  },
-  {
-    "code": "OH-NO",
-    "pattern": "HHL-LMH-LHH-HHM-LHL"
-  },
-  {
-    "code": "GOGO",
-    "pattern": "HHM-HMH-MMH-HHH-MHM"
-  },
-  {
-    "code": "SEXY",
-    "pattern": "HMH-HHL-HMM-HMM-HLH"
-  },
-  {
-    "code": "LOVE-R",
-    "pattern": "MLH-LHL-HLH-MLM-MLH"
-  },
-  {
-    "code": "MUM",
-    "pattern": "MMH-MHL-HMM-LMM-HLL"
-  },
-  {
-    "code": "FAKE",
-    "pattern": "HLM-MML-MLM-MLM-HLH"
-  },
-  {
-    "code": "OJBK",
-    "pattern": "MMH-MMM-HML-LMM-MML"
-  },
-  {
-    "code": "MALO",
-    "pattern": "MLH-MHM-MLH-MLH-LMH"
-  },
-  {
-    "code": "JOKE-R",
-    "pattern": "LLH-LHL-LML-LLL-MLM"
-  },
-  {
-    "code": "WOC!",
-    "pattern": "HHL-HMH-MMH-HHM-LHH"
-  },
-  {
-    "code": "THIN-K",
-    "pattern": "HHL-HMH-MLH-MHM-LHH"
-  },
-  {
-    "code": "SHIT",
-    "pattern": "HHL-HLH-LMM-HHM-LHH"
-  },
-  {
-    "code": "ZZZZ",
-    "pattern": "MHL-MLH-LML-MML-LHM"
-  },
-  {
-    "code": "POOR",
-    "pattern": "HHL-MLH-LMH-HHH-LHL"
-  },
-  {
-    "code": "MONK",
-    "pattern": "HHL-LLH-LLM-MML-LHM"
-  },
-  {
-    "code": "IMSB",
-    "pattern": "LLM-LMM-LLL-LLL-MLM"
-  },
-  {
-    "code": "SOLO",
-    "pattern": "LML-LLH-LHL-LML-LHM"
-  },
-  {
-    "code": "FUCK",
-    "pattern": "MLL-LHL-LLM-MLL-HLH"
-  },
-  {
-    "code": "DEAD",
-    "pattern": "LLL-LLM-LML-LLL-LHM"
-  },
-  {
-    "code": "IMFW",
-    "pattern": "LLH-LHL-LML-LLL-MLL"
-  }
+  { "code": "CTRL",   "pattern": "HHH-HMH-MHH-HHH-MHM-LM" },
+  { "code": "ATM-er", "pattern": "HHH-HHM-HHH-HMH-MHL-MM" },
+  { "code": "Dior-s", "pattern": "MHM-MMH-MHM-HMH-LHL-LH" },
+  { "code": "BOSS",   "pattern": "HHH-HMH-MMH-HHH-LHL-LM" },
+  { "code": "THAN-K", "pattern": "MHM-HMM-HHM-MMH-MHL-LH" },
+  { "code": "OH-NO",  "pattern": "HHL-LMH-LHH-HHM-LHL-HL" },
+  { "code": "GOGO",   "pattern": "HHM-HMH-MMH-HHH-MHM-LM" },
+  { "code": "SEXY",   "pattern": "HMH-HHL-HMM-HMM-HLH-LH" },
+  { "code": "LOVE-R", "pattern": "MLH-LHL-HLH-MLM-MLH-MH" },
+  { "code": "MUM",    "pattern": "MMH-MHL-HMM-LMM-HLL-ML" },
+  { "code": "FAKE",   "pattern": "HLM-MML-MLM-MLM-HLH-MH" },
+  { "code": "OJBK",   "pattern": "MMH-MMM-HML-LMM-MML-LL" },
+  { "code": "MALO",   "pattern": "MLH-MHM-MLH-MLH-LMH-LM" },
+  { "code": "JOKE-R", "pattern": "LLH-LHL-LML-LLL-MLM-HH" },
+  { "code": "WOC!",   "pattern": "HHL-HMH-MMH-HHM-LHH-LH" },
+  { "code": "THIN-K", "pattern": "HHL-HMH-MLH-MHM-LHH-LH" },
+  { "code": "SHIT",   "pattern": "HHL-HLH-LMM-HHM-LHH-HM" },
+  { "code": "ZZZZ",   "pattern": "MHL-MLH-LML-MML-LHM-LL" },
+  { "code": "POOR",   "pattern": "HHL-MLH-LMH-HHH-LHL-LL" },
+  { "code": "MONK",   "pattern": "HHL-LLH-LLM-MML-LHM-LL" },
+  { "code": "IMSB",   "pattern": "LLM-LMM-LLL-LLL-MLM-HM" },
+  { "code": "SOLO",   "pattern": "LML-LLH-LHL-LML-LHM-HM" },
+  { "code": "FUCK",   "pattern": "MLL-LHL-LLM-MLL-HLH-LH" },
+  { "code": "DEAD",   "pattern": "LLL-LLM-LML-LLL-LHM-LL" },
+  { "code": "IMFW",   "pattern": "LLH-LHL-LML-LLL-MLL-HL" }
 ];
     const DIM_EXPLANATIONS = {
   "S1": {
