@@ -892,37 +892,50 @@
     }
     .share-toast.show { opacity: 1; }
 
+    /* ── 原作者 fixed 右下角 ── */
+    .site-author-credit {
+      position: fixed;
+      bottom: 14px;
+      right: 16px;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.55;
+      transition: opacity .2s ease;
+      text-decoration: none;
+      pointer-events: auto;
+    }
+    .site-author-credit:hover { opacity: 1; }
+    .site-author-credit strong {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    /* ── 域名居中 ── */
+    .hero-domain-center {
+      display: block;
+      text-align: center;
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      margin: 14px 0 0;
+      transition: color .15s ease;
+    }
+    .hero-domain-center:hover { color: var(--accent-strong); }
+
     /* ── 首页 credits + 友情链接 ── */
     .hero-meta {
-      margin-top: 28px;
+      margin-top: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
     }
-    .hero-meta-credit {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .hero-meta-author {
-      color: var(--accent-strong);
-      text-decoration: none;
-      font-weight: 600;
-      transition: opacity .15s ease;
-    }
-    .hero-meta-author:hover { opacity: 0.7; }
-    .hero-meta-sep { color: var(--line); }
-    .hero-meta-domain {
-      color: var(--muted);
-      text-decoration: none;
-      font-family: ui-monospace, monospace;
-      font-size: 12px;
-      transition: color .15s ease;
-    }
-    .hero-meta-domain:hover { color: var(--accent-strong); }
     .hero-meta-links {
       display: flex;
       flex-direction: column;
@@ -1073,6 +1086,9 @@
   </style>
 </head>
 <body>
+  <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="site-author-credit">
+    <span>原作者</span><strong>B站@蛆肉儿串儿</strong>
+  </a>
   <div class="shell">
     <section id="intro" class="screen active">
       <div class="hero card hero-minimal">
@@ -1081,13 +1097,8 @@
           <button id="startBtn" class="btn-primary">开始测试</button>
           <button id="previewBtn" class="btn-secondary">预览模式（显示维度标签）</button>
         </div>
+        <a href="https://sbti.ytht.io" class="hero-domain-center">sbti.ytht.io</a>
         <div class="hero-meta">
-          <div class="hero-meta-credit">
-            <span class="hero-meta-links-label">原作者</span>
-            <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="hero-meta-author">B站@蛆肉儿串儿</a>
-            <span class="hero-meta-sep">·</span>
-            <a href="https://sbti.ytht.io" class="hero-meta-domain">sbti.ytht.io</a>
-          </div>
           <div class="hero-meta-links">
             <span class="hero-meta-links-label">友情链接</span>
             <a href="https://bbs.ytht.io" target="_blank" rel="noopener" class="hero-meta-link">
