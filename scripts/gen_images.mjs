@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// gen_images.mjs — Generate images for new SBTI types via Alibaba Cloud DashScope
+// gen_images.mjs — Generate images for new SBTI types via qwen-image-2.0-pro (img2img style transfer)
 // Usage: DASHSCOPE_API_KEY=xxx node scripts/gen_images.mjs
 // Images are saved to ../image/{CODE}.png
+// Uses CTRL.png + OJBK.png as style reference to match original low-poly paper-fold 3D character style
 
 import fs from 'fs';
 import https from 'https';
@@ -17,20 +18,65 @@ if (!API_KEY) {
   process.exit(1);
 }
 
+// Style reference images — text-free crops of original SBTI characters (low-poly paper-fold 3D style)
+const REF_IMAGES = [
+  'https://sbti.ytht.io/image/CTRL_ref.png',
+  'https://sbti.ytht.io/image/OJBK_ref.png',
+];
+
 const NEW_TYPES = [
-  { code: 'PULL',  cn: '暗控者',   prompt: '幕后操控者，低调神秘，在暗中拨动棋子' },
-  { code: 'NOPE',  cn: '回避者',   prompt: '警惕的孤独者，筑起高墙，内心藏有伤痕' },
-  { code: 'LOOP',  cn: '死循环者', prompt: '陷入思维漩涡的智者，脑内无数标签页永不关闭' },
-  { code: 'RUST',  cn: '内腐者',   prompt: '内心默默崩溃的存在，表面平静，内部锈蚀' },
-  { code: 'CLOS',  cn: '封闭者',   prompt: '主动封闭自我的人，将门焊死，精心构建防御' },
-  { code: 'CLIN',  cn: '黏附者',   prompt: '因恐惧而依附的人，紧紧抓住关系，害怕消失' },
-  { code: 'MASK',  cn: '无感面具', prompt: '层层叠叠的面具下什么都没有，迷失自我的存在' },
-  { code: 'WIRE',  cn: '高压线',   prompt: '高压运转的完美主义者，随时可能燃尽的高压线' },
-  { code: 'FAWN',  cn: '讨好者',   prompt: '永远迎合他人、消灭冲突的和事佬，自我消融' },
-  { code: 'ECHO',  cn: '回声室',   prompt: '镜子一般的人格，映射周围的一切，没有自己的声音' },
-  { code: 'DRIFT', cn: '漂流者',   prompt: '随波漂流的存在，没有方向也没有锚点，悠然飘荡' },
-  { code: 'KEEN',  cn: '探索狂',   prompt: '充满好奇心的冒险者，见什么都想尝试，活力四射' },
-  { code: 'MIST',  cn: '焦虑虚空', prompt: '弥漫在焦虑与空虚之间的存在，找不到着陆点' },
+  {
+    code: 'PULL', cn: '暗控者',
+    pose: '站立，一只手伸向远处像在拨动看不见的棋子，神秘低调，眼神锐利，轻微侧身'
+  },
+  {
+    code: 'NOPE', cn: '回避者',
+    pose: '背对观众，双臂环绕自己，侧脸微微回头，警惕神情，防御姿态'
+  },
+  {
+    code: 'LOOP', cn: '死循环者',
+    pose: '坐在地上，双手抱头，眉头紧皱，陷入思考，佝偻蜷缩'
+  },
+  {
+    code: 'RUST', cn: '内腐者',
+    pose: '站立但身体轻微佝偻内缩，双臂垂落，表情麻木空洞，略微低头'
+  },
+  {
+    code: 'CLOS', cn: '封闭者',
+    pose: '站立，双臂紧紧交叉在胸前，侧身，表情冷漠防御，闭目'
+  },
+  {
+    code: 'CLIN', cn: '黏附者',
+    pose: '微微弯腰向前，双手向前伸出抓握，表情渴望依附，眉眼向上'
+  },
+  {
+    code: 'MASK', cn: '无感面具',
+    pose: '站立，双手捂住脸，面部完全遮住，身体僵直，空洞感'
+  },
+  {
+    code: 'WIRE', cn: '高压线',
+    pose: '站立，全身紧绷，双臂向两侧伸直，身体僵硬，表情紧张焦虑'
+  },
+  {
+    code: 'FAWN', cn: '讨好者',
+    pose: '深深弯腰鞠躬，双手合十或向前，表情讨好，眼神向上看'
+  },
+  {
+    code: 'ECHO', cn: '回声室',
+    pose: '站立，双臂微张，表情空洞茫然，像在等待回应，身体略向前倾'
+  },
+  {
+    code: 'DRIFT', cn: '漂流者',
+    pose: '放松飘逸姿态，一臂向侧伸展，身体微微倾斜，表情淡然惬意'
+  },
+  {
+    code: 'KEEN', cn: '探索狂',
+    pose: '跳跃欢快姿态，双臂张开，腿部弯曲，表情兴奋好奇，充满活力'
+  },
+  {
+    code: 'MIST', cn: '焦虑虚空',
+    pose: '站立，双臂向前摸索，眼神迷茫空洞，身体轻微颤抖感，找不到方向'
+  },
 ];
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -38,116 +84,123 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 async function downloadFile(url, dest) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
-    https.get(url, res => {
-      if (res.statusCode === 302 || res.statusCode === 301) {
-        file.close();
-        fs.unlinkSync(dest);
-        downloadFile(res.headers.location, dest).then(resolve).catch(reject);
-        return;
-      }
-      res.pipe(file);
-      file.on('finish', () => { file.close(); resolve(); });
-    }).on('error', err => {
-      fs.unlinkSync(dest);
-      reject(err);
-    });
+    const doRequest = (u) => {
+      https.get(u, res => {
+        if (res.statusCode === 301 || res.statusCode === 302) {
+          file.close();
+          doRequest(res.headers.location);
+          return;
+        }
+        res.pipe(file);
+        file.on('finish', () => { file.close(); resolve(); });
+      }).on('error', err => {
+        try { fs.unlinkSync(dest); } catch (_) {}
+        reject(err);
+      });
+    };
+    doRequest(url);
   });
 }
 
-async function generateImage(type) {
+async function apiPost(body) {
+  return new Promise((resolve, reject) => {
+    const payload = JSON.stringify(body);
+    const options = {
+      hostname: 'dashscope.aliyuncs.com',
+      path: '/api/v1/services/aigc/multimodal-generation/generation',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload),
+        'Authorization': `Bearer ${API_KEY}`,
+      }
+    };
+    const req = https.request(options, r => {
+      let raw = '';
+      r.on('data', d => raw += d);
+      r.on('end', () => {
+        try { resolve({ status: r.statusCode, body: JSON.parse(raw) }); }
+        catch (e) { reject(new Error(`JSON parse failed: ${raw.slice(0, 200)}`)); }
+      });
+    });
+    req.on('error', reject);
+    req.write(payload);
+    req.end();
+  });
+}
+
+async function generateImage(type, force = false) {
   const outPath = path.join(OUT_DIR, `${type.code}.png`);
-  if (fs.existsSync(outPath)) {
+  if (!force && fs.existsSync(outPath)) {
     console.log(`⏭  ${type.code}: already exists, skipping`);
     return;
   }
 
   console.log(`🎨 Generating ${type.code} (${type.cn})...`);
 
-  const fullPrompt = `SBTI人格测试插画，赛博朋克水彩风格，角色代表「${type.cn}」人格，${type.prompt}，背景简洁，人物半身，参考已有SBTI人格图片风格，无文字水印，高质量插画`;
+  const prompt = `参考这两张图片的3D低多边形折纸小人风格，生成全新人格角色「${type.cn}」：${type.pose}，纯白背景。重要：画面内绝对不含任何文字、汉字、字母、标题、水印、标签。只有人物角色和白色背景。`;
 
-  const payload = {
-    model: 'wanx2.1-t2i-turbo',
-    input: { prompt: fullPrompt },
-    parameters: { size: '768*1024', n: 1 }
+  const requestBody = {
+    model: 'qwen-image-2.0-pro',
+    input: {
+      messages: [{
+        role: 'user',
+        content: [
+          ...REF_IMAGES.map(url => ({ image: url })),
+          { text: prompt }
+        ]
+      }]
+    },
+    parameters: {
+      size: '768*1024',
+      watermark: false,
+      prompt_extend: false,
+      negative_prompt: 'text, label, watermark, chinese characters, letters, typography, words, caption, title, crown, special props, weapons, accessories',
+    }
   };
 
+  // Retry up to 5 times on 429
+  let res;
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    res = await apiPost(requestBody);
+    if (res.status === 429) {
+      const waitSec = 60 * attempt;
+      console.log(`  ⏳ Rate limited (attempt ${attempt}), waiting ${waitSec}s...`);
+      await sleep(waitSec * 1000);
+      continue;
+    }
+    break;
+  }
+
   try {
-    const body = JSON.stringify(payload);
-    const taskRes = await new Promise((resolve, reject) => {
-      const options = {
-        hostname: 'dashscope.aliyuncs.com',
-        path: '/api/v1/services/aigc/text2image/image-synthesis',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(body),
-          'Authorization': `Bearer ${API_KEY}`,
-          'X-DashScope-Async': 'enable'
-        }
-      };
-      const req = https.request(options, r => {
-        let raw = '';
-        r.on('data', d => raw += d);
-        r.on('end', () => resolve({ status: r.statusCode, body: JSON.parse(raw) }));
-      });
-      req.on('error', reject);
-      req.write(body);
-      req.end();
-    });
-
-    if (taskRes.status !== 200 && taskRes.status !== 202) {
-      console.error(`  ❌ API error ${taskRes.status}:`, taskRes.body);
+    if (res.status !== 200) {
+      console.error(`  ❌ API error ${res.status}:`, JSON.stringify(res.body).slice(0, 300));
       return;
     }
 
-    const taskId = taskRes.body?.output?.task_id;
-    if (!taskId) {
-      console.error('  ❌ No task_id in response:', taskRes.body);
+    const imageUrl = res.body?.output?.choices?.[0]?.message?.content?.[0]?.image;
+    if (!imageUrl) {
+      console.error('  ❌ No image URL in response:', JSON.stringify(res.body).slice(0, 300));
       return;
     }
 
-    console.log(`  ⏳ Task ${taskId}, polling...`);
-
-    for (let i = 0; i < 30; i++) {
-      await sleep(3000);
-      const taskStatus = await new Promise((resolve, reject) => {
-        const options = {
-          hostname: 'dashscope.aliyuncs.com',
-          path: `/api/v1/tasks/${taskId}`,
-          method: 'GET',
-          headers: { Authorization: `Bearer ${API_KEY}` }
-        };
-        https.request(options, r => {
-          let raw = '';
-          r.on('data', d => raw += d);
-          r.on('end', () => resolve({ status: r.statusCode, body: JSON.parse(raw) }));
-        }).on('error', reject).end();
-      });
-
-      const status = taskStatus.body?.output?.task_status;
-      if (status === 'SUCCEEDED') {
-        const imageUrl = taskStatus.body?.output?.results?.[0]?.url;
-        if (!imageUrl) { console.error('  ❌ No image URL in result'); return; }
-        await downloadFile(imageUrl, outPath);
-        console.log(`  ✅ Saved to ${outPath}`);
-        return;
-      } else if (status === 'FAILED') {
-        console.error('  ❌ Task failed:', taskStatus.body?.output?.message);
-        return;
-      }
-      console.log(`  ... status: ${status}`);
-    }
-    console.error('  ❌ Timeout waiting for task');
+    await downloadFile(imageUrl, outPath);
+    const size = fs.statSync(outPath).size;
+    console.log(`  ✅ Saved ${outPath} (${(size/1024).toFixed(0)}KB)`);
   } catch (err) {
-    console.error(`  ❌ Error:`, err.message);
+    console.error(`  ❌ Error generating ${type.code}:`, err.message);
   }
 }
 
 async function main() {
-  console.log(`Generating images for ${NEW_TYPES.length} new SBTI types...\n`);
+  const forceRegen = process.argv.includes('--force');
+  if (forceRegen) {
+    console.log('⚠️  --force: will overwrite existing images\n');
+  }
+  console.log(`Generating images for ${NEW_TYPES.length} new SBTI types via qwen-image-2.0-pro...\n`);
   for (const type of NEW_TYPES) {
-    await generateImage(type);
-    await sleep(1000);
+    await generateImage(type, forceRegen);
+    await sleep(20000); // 20s between requests to stay under rate limit
   }
   console.log('\nDone!');
 }
