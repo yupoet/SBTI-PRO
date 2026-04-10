@@ -1006,6 +1006,135 @@
     }
     .stats-fab:hover { opacity: 1; transform: scale(1.15); }
 
+    /* ── Share Site FAB ── */
+    .share-site-fab {
+      position: fixed;
+      bottom: 96px;
+      right: 16px;
+      z-index: 200;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.45;
+      transition: opacity .2s ease, transform .15s ease;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-strong);
+      touch-action: manipulation;
+    }
+    .share-site-fab:hover { opacity: 1; transform: scale(1.15); }
+
+    /* ── Share Site Modal ── */
+    .share-site-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(30, 42, 34, 0.45);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .share-site-overlay.open { display: flex; }
+    .share-site-box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 24px 60px rgba(81, 124, 168, 0.18);
+      width: 100%;
+      max-width: 300px;
+      padding: 24px 20px 20px;
+      position: relative;
+      text-align: center;
+      animation: shareSiteIn .2s ease;
+    }
+    @keyframes shareSiteIn {
+      from { opacity: 0; transform: scale(.94) translateY(8px); }
+      to   { opacity: 1; transform: scale(1)  translateY(0); }
+    }
+    .share-site-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 50%;
+      border: none;
+      background: var(--soft);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .share-site-close:hover { background: var(--line); color: var(--text); }
+    .share-site-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .share-site-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .share-site-qr {
+      margin: 0 auto 14px;
+      width: 168px;
+      height: 168px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .share-site-qr img {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+    .share-site-url {
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      color: var(--accent-strong);
+      margin-bottom: 14px;
+    }
+    .share-site-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .share-site-actions button {
+      flex: 1;
+      min-height: 44px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid var(--line);
+      touch-action: manipulation;
+    }
+    .share-site-copy {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent) !important;
+    }
+    .share-site-copy:hover { background: var(--accent-strong); border-color: var(--accent-strong) !important; }
+    .share-site-native {
+      background: var(--soft);
+      color: var(--text);
+    }
+    .share-site-native:hover { background: var(--line); }
+
     /* ── 域名居中 ── */
     .hero-domain-center {
       display: block;
@@ -1306,6 +1435,13 @@
   </style>
 </head>
 <body>
+  <button class="share-site-fab" id="shareSiteBtn" title="分享首页" aria-label="分享 SBTI 首页">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+  </button>
   <button class="stats-fab" id="statsBtn" title="查看测试统计">📊</button>
   <a href="https://space.bilibili.com/417038183" target="_blank" rel="noopener" class="site-author-credit">
     <span>原作者</span><strong>B站@蛆肉儿串儿</strong>
@@ -3109,6 +3245,81 @@
       }
     })();
     // ── End Stats ───────────────────────────────────────────
+
+    // ── Share Site ───────────────────────────────────────────
+    (function initShareSite() {
+      const fab      = document.getElementById('shareSiteBtn');
+      const overlay  = document.getElementById('shareSiteOverlay');
+      const closeBtn = document.getElementById('shareSiteClose');
+      const qrEl     = document.getElementById('shareSiteQr');
+      const copyBtn  = document.getElementById('shareSiteCopy');
+      const nativeBtn = document.getElementById('shareSiteNative');
+      const SHARE_URL = 'https://sbti.ytht.io';
+      let qrGenerated = false;
+
+      if (navigator.share) {
+        nativeBtn.style.display = '';
+        nativeBtn.addEventListener('click', function() {
+          navigator.share({
+            title: 'SBTI 人格测试',
+            text: '17维度，38种人格，比MBTI更懂你的电子灵魂。',
+            url: SHARE_URL
+          }).catch(function() {});
+        });
+      }
+
+      function openShare() {
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        if (!qrGenerated) {
+          qrGenerated = true;
+          const qr = qrcode(0, 'M');
+          qr.addData(SHARE_URL);
+          qr.make();
+          qrEl.innerHTML = qr.createImgTag(4, 0);
+        }
+      }
+
+      function closeShare() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      fab.addEventListener('click', openShare);
+      closeBtn.addEventListener('click', closeShare);
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeShare();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeShare();
+      });
+
+      copyBtn.addEventListener('click', function() {
+        var orig = copyBtn.textContent;
+        function copied() {
+          copyBtn.textContent = '已复制 ✓';
+          setTimeout(function() { copyBtn.textContent = orig; }, 2000);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(SHARE_URL).then(copied).catch(function() {
+            fallbackCopy(); copied();
+          });
+        } else {
+          fallbackCopy(); copied();
+        }
+        function fallbackCopy() {
+          var ta = document.createElement('textarea');
+          ta.value = SHARE_URL;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch(e) {}
+          document.body.removeChild(ta);
+        }
+      });
+    })();
+    // ── End Share Site ───────────────────────────────────────────
   </script>
 
   <!-- Stats Modal -->
@@ -3123,6 +3334,20 @@
       </div>
       <div class="stats-body" id="statsBody">
         <div class="stats-loading">正在读取统计数据…</div>
+      </div>
+    </div>
+  </div>
+  <!-- Share Site Modal -->
+  <div class="share-site-overlay" id="shareSiteOverlay" role="dialog" aria-modal="true" aria-label="分享 SBTI 首页">
+    <div class="share-site-box">
+      <button class="share-site-close" id="shareSiteClose" aria-label="关闭">✕</button>
+      <div class="share-site-title">分享 SBTI 人格测试</div>
+      <div class="share-site-sub">扫码或复制链接，邀请朋友来测测</div>
+      <div class="share-site-qr" id="shareSiteQr"></div>
+      <div class="share-site-url">sbti.ytht.io</div>
+      <div class="share-site-actions">
+        <button class="share-site-copy" id="shareSiteCopy">复制链接</button>
+        <button class="share-site-native" id="shareSiteNative" style="display:none">分享</button>
       </div>
     </div>
   </div>
