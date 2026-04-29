@@ -12,11 +12,22 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/yupoet/SBTI-PRO/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/yupoet/SBTI-PRO?style=flat-square&logo=github"></a>
+  <a href="https://github.com/yupoet/SBTI-PRO/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/yupoet/SBTI-PRO?style=flat-square&logo=github"></a>
+  <a href="https://github.com/yupoet/SBTI-PRO/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/yupoet/SBTI-PRO?style=flat-square&logo=github"></a>
+  <img alt="Last Commit" src="https://img.shields.io/github/last-commit/yupoet/SBTI-PRO?style=flat-square&logo=git">
+  <img alt="Repo Size" src="https://img.shields.io/github/repo-size/yupoet/SBTI-PRO?style=flat-square">
+</p>
+
+<p align="center">
   <img alt="版本" src="https://img.shields.io/badge/version-3.0.0-brightgreen?style=flat-square">
   <img alt="维度" src="https://img.shields.io/badge/维度-17 維-purple?style=flat-square">
   <img alt="人格" src="https://img.shields.io/badge/人格-38 种-blue?style=flat-square">
   <img alt="题目" src="https://img.shields.io/badge/题目-41 道-orange?style=flat-square">
-  <img alt="许可" src="https://img.shields.io/badge/license-非商业-lightgrey?style=flat-square">
+  <img alt="Stack" src="https://img.shields.io/badge/stack-HTML%20%2B%20Vanilla%20JS-E34F26?style=flat-square&logo=html5&logoColor=white">
+  <img alt="Host" src="https://img.shields.io/badge/host-Cloudflare%20Pages-F38020?style=flat-square&logo=cloudflarepages&logoColor=white">
+  <img alt="代码协议" src="https://img.shields.io/badge/code-MIT-green?style=flat-square">
+  <img alt="内容授权" src="https://img.shields.io/badge/content-非商业-lightgrey?style=flat-square">
 </p>
 
 <p align="center">
@@ -34,6 +45,7 @@
 
 - [这是什么](#-这是什么)
 - [在线体验](#-在线体验)
+- [项目标签](#-项目标签)
 - [如何看懂你的结果](#-如何看懂你的结果)
 - [十七维度一览](#-十七维度一览)
 - [稀有度排行榜](#-稀有度排行榜)
@@ -46,6 +58,7 @@
   - [特殊人格（2 种）](#特殊人格2-种)
 - [Pro 版新增内容](#-pro-版新增内容)
 - [数据来源与原理](#-数据来源与原理)
+- [开源列表投稿建议](#-开源列表投稿建议)
 - [本地运行](#-本地运行)
 - [致谢](#-致谢)
 - [版本历史](#-版本历史)
@@ -79,6 +92,16 @@ SBTI（Soul Bytes Type Indicator）是 [B站@蛆肉儿串儿](https://space.bili
 - 📲 **一屏一题** — 移动端选中后 280ms 自动进入下一题
 - 🔗 **URL 分享** — 结果写入 `location.hash`（如 `sbti.ytht.io/#CTRL`）
 - 🖼️ **分享图片** — 750×1334 Canvas 卡片，含 QR 码
+
+---
+
+## 🏷️ 项目标签
+
+建议用于 GitHub Topics 与社区投稿关键词：
+
+`sbti` · `soul-bytes-type-indicator` · `personality` · `personality-test` · `personality-quiz` · `psychological-tests` · `psychology` · `psychometrics` · `self-discovery` · `mbti` · `quiz` · `chinese` · `zh-cn` · `static-site` · `vanilla-js` · `webapp` · `cloudflare-pages` · `open-source`
+
+也可以在内容分发时使用中文关键词：`人格测试`、`心理测试`、`自我认知`、`MBTI 平替`、`中文开源项目`、`娱乐向测试`。
 
 ---
 
@@ -588,6 +611,24 @@ SBTI（Soul Bytes Type Indicator）是 [B站@蛆肉儿串儿](https://space.bili
 DASHSCOPE_API_KEY=xxx node scripts/gen_images.mjs
 # 生成 image/PULL.png … image/MIST.png（共 13 张）
 ```
+
+---
+
+## 📣 开源列表投稿建议
+
+SBTI-PRO 更适合投递到“有趣项目 / 中文项目 / 自我认知工具 / 非临床心理测试”方向。提交简介时建议明确：本项目仅供娱乐和自我观察，不能替代心理诊断、咨询或医疗建议。
+
+| 优先级 | 列表 / 社区 | 建议栏目 | 投稿方式 | 推荐理由 |
+|---|---|---|---|---|
+| 高 | [HelloGitHub](https://github.com/521xueweihan/HelloGitHub) | 有趣、入门级开源项目 | 通过官网“推荐或自荐”提交 | 中文项目、上手门槛低、在线可体验，符合“有趣 + 入门级”定位 |
+| 高 | [Awesome-GitHub-Repo](https://github.com/Wechat-ggGitHub/Awesome-GitHub-Repo) | 好玩项目 / 宝藏项目 / 开源游戏或工具 | Pull Request 或 Issue | 该列表收集高质量、有趣的 GitHub 项目，SBTI-PRO 的传播属性较匹配 |
+| 高 | [awesome-psychology-projects](https://github.com/jasiek-net/awesome-psychology-projects) | Games & Fun / Related / Mental health | Pull Request | 该列表面向心理学与心理健康相关技术项目，娱乐化人格测试可投“Games & Fun” |
+| 中 | [awesome-psychology](https://github.com/weeeBox/awesome-psychology) | Psychology websites / self-development 相关条目 | Pull Request | 偏课程、书籍、视频资源；若维护者接受网站工具，可作为心理学趣味资源提交 |
+| 中 | [awesome-mentalhealth](https://github.com/theimpossibleastronaut/awesome-mentalhealth) | Self-help / Apps / Websites | Pull Request | 泛心理健康资源列表，适合以“自我反思工具”角度提交，但需弱化诊断意味 |
+| 低 | [awesome-mental-health](https://github.com/dreamingechoes/awesome-mental-health) | Applications | Pull Request | 主要面向软件行业心理健康资源；除非补充压力、焦虑或情绪自查价值，否则匹配度一般 |
+| 观察 | [GitHub-Chinese-Top-Charts](https://github.com/GrowingGit/GitHub-Chinese-Top-Charts) | 中文项目榜单 | 通常依赖自动收录与星标增长 | 不是常规投稿型列表；完善中文描述、README、Topics 后更容易被发现 |
+| 不建议 | [awesome-healthcare](https://github.com/kakoni/awesome-healthcare) | Healthcare applications | 不建议投递 | 偏医疗、临床与健康信息系统，本项目是娱乐向人格测试，领域边界不匹配 |
+| 不建议 | [Awesome-LLM-Psychometrics](https://github.com/ValueByte-AI/Awesome-LLM-Psychometrics) | Personality / Psychometrics papers | 不建议投递 | 偏 LLM 心理测量论文与研究资源；除非后续补充 LLM 评测论文或数据集 |
 
 ---
 
